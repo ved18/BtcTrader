@@ -25,6 +25,6 @@ def loginView(request):
 
         if row:
             context["success"] = True
-            return render(request, 'home.html')
+            return render(request, 'login.html')
 
     return render(request, 'login.html')

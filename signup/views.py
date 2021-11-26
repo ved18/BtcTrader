@@ -26,15 +26,17 @@ def signupView(request):
         selectQuery = "select id from users where username = '" + email + "';"
         tuple = (email)
 
-        row = db.select(selectQuery, errorMsg, email)
+        row = db.select(selectQuery, errorMsg)
         id = str(row[0][0])
 
         #insert password and client type in login table
         insertPasswordQuery = "Insert into login(id, password, type) values(" + id + ", '"+ password + "', 'client');"
         insertPassword = db.insertOrUpdateOrDelete(insertPasswordQuery, errorMsg)
 
-        #insertClientQuery = "Insert into client values(" + id + ", '"
-        if insertEmail and insertPassword:
-            return render(request, 'login/login.html')
+        insertClientQuery = "Insert into client values(" + id + ", '"+ firstName +"', '"+ lastName +"', '"+ state +"', '"+ city +"', '"+ street +"', " + zip + ", " + phoneNumber + ", " + cellNumber + ", 'client');"
+        insertClient = db.insertOrUpdateOrDelete(insertClientQuery, errorMsg)
+
+        if insertEmail and insertPassword and insertClient:
+            return render(request, 'signup.html')
         
     return render(request, 'signup.html')
