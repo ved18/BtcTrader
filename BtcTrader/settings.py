@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'login.apps.LoginConfig',
+    'signup.apps.SignupConfig'
 ]
 
 MIDDLEWARE = [
@@ -77,7 +78,7 @@ WSGI_APPLICATION = 'BtcTrader.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'testlogin',
+        'NAME': 'BtcTraderDB',
         'USER': 'root',
         'HOST': 'localhost',
         'PORT': 3306,

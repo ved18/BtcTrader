@@ -10,7 +10,7 @@ def loginView(request):
         "success" : False,
     }
 
-    db = DB();
+    db = DB()
 
     if request.POST.get("Login"):
         context["loginSubmit"] = True

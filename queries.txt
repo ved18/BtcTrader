@@ -7,3 +7,4 @@ create table transaction(tid int NOT NULL, clientId int NOT NULL, traderId int N
 create table portfolio(id int NOT NULL, investmentAmount float NOT NULL, totalBtc float NOT NULL, PRIMARY KEY(id), FOREIGN KEY(id) references users(id));
 create table metaData(totalBtc float NOT NULL, totalCurrency float NOT NULL, commissionGold float NOT NULL DEFAULT(2.5), commissionSilver float NOT NULL DEFAULT(5));
 create table manager(username varchar(255) NOT NULL, password varchar(255) NOT NULL, PRIMARY KEY(username));
+Alter table users ADD UNIQUE(username);
