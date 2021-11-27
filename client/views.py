@@ -13,7 +13,7 @@ def homeView(request, id):
 
 # update password for the user
 def updateProfile(newPassword, id):
-    updateQuery = "update login set password='" + newPassword + "' where id=" + id + ";"
+    updateQuery = "update login set password='" + newPassword + "' where id=" + str(id) + ";"
     errorMsg = "could not update password"
 
     db = DB()
@@ -33,11 +33,14 @@ def editProfileView(request, id):
         "id" : "",
     }
 
-    if request.POST.get("editProfileSubmit"):
-        newPassword = str(request.get("newPassword"))
-        confirmPassword = str(request.get("confirmPassword"))
+    context["id"] = str(id)
+    
+    if request.POST.get("epSubmit"):
+        newPassword = str(request.POST.get("newPassword"))
+        confirmPassword = str(request.POST.get("confirmPassword"))
         if(newPassword == confirmPassword):
             updateProfile(newPassword, id)
+        return render(request, 'homePage.html', context)
     
     selectQuery = "select firstName, lastName, phoneNumber from client where id =" + str(id) + ";"
     errorMsg = "Could not find the particular user in edit profile"
@@ -54,7 +57,7 @@ def editProfileView(request, id):
     
     if emailRow:
         context["email"] = emailRow[0][0]
-    context["id"] = str(id)
+    
 
     return render(request, 'editProfile.html', context)
 
