@@ -86,7 +86,7 @@
                           <div class="col">
                             <div class="form-group">
                               <label>Current Password</label>
-                              <input class="form-control" type="password">
+                              <input class="form-control" type="password" name="oldPassword">
                             </div>
                           </div>
                         </div>
@@ -113,7 +113,15 @@
                       </div>
                     </div>
                   </form>
-
+                    {% if click == True and changed == False%}
+                        <div style="width: fit-content; color: red;" role="alert">
+                            Please try again.
+                        </div>
+                    {% elif click == True and changed == True%}
+                        <div style="width: fit-content; color: green;" role="alert">
+                            Edited Profile Sucessfully
+                        </div>
+                    {% endif %}
                 </div>
               </div>
             </div>

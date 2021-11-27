@@ -8,9 +8,9 @@ class DB:
     def __init__(self):
         self.cursor = connection.cursor()
 
-    def __del__(self):
-        self.cursor.close()
-        connection.close()
+    # def __del__(self):
+    #     self.cursor.close()
+    #     connection.close()
 
     def beginTransaction(self):
 

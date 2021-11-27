@@ -22,6 +22,17 @@ def updateProfile(newPassword, id):
         return True
     return False
 
+#function to verify old password for editing
+def verifyPassword(oldPassword, id):
+    selectPassword = "select password from login where id=" + str(id) +";"
+    errorMsg = "could not find old password"
+
+    db = DB()
+    row = db.select(selectPassword, errorMsg)
+
+    if row[0][0] == oldPassword:
+        return True
+    return False
 
 def editProfileView(request, id):
     db = DB()
@@ -31,16 +42,21 @@ def editProfileView(request, id):
         "phoneNumber" : "",
         "email" : "",
         "id" : "",
+        "click" : False,
+        "changed" : False,
     }
 
     context["id"] = str(id)
-    
+
     if request.POST.get("epSubmit"):
+        context["click"] = True
         newPassword = str(request.POST.get("newPassword"))
         confirmPassword = str(request.POST.get("confirmPassword"))
-        if(newPassword == confirmPassword):
-            updateProfile(newPassword, id)
-        return render(request, 'homePage.html', context)
+        oldPassword = str(request.POST.get("oldPassword"))
+        if verifyPassword(oldPassword, id):
+            if(newPassword == confirmPassword):
+                updateProfile(newPassword, id)
+                context["changed"] = True
     
     selectQuery = "select firstName, lastName, phoneNumber from client where id =" + str(id) + ";"
     errorMsg = "Could not find the particular user in edit profile"
