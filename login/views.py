@@ -10,7 +10,7 @@ def loginView(request):
         "success" : False,
     }
 
-    db = DB();
+    db = DB()
 
     if request.POST.get("Login"):
         context["loginSubmit"] = True
@@ -23,8 +23,8 @@ def loginView(request):
 
         row = db.select(selectQuery, errorMsg)
 
-        if row:
+        if row[0][0] == password:
             context["success"] = True
-            return render(request, 'home.html')
+            return render(request, 'login.html', context)
 
-    return render(request, 'login.html')
+    return render(request, 'login.html', context)

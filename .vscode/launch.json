@@ -5,11 +5,16 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python: Current File",
+            "name": "Python: Django",
             "type": "python",
             "request": "launch",
-            "program": "${file}",
-            "console": "integratedTerminal"
+            "program": "./manage.py",
+            "args": [
+                "runserver"            
+            ],
+            "django": true,
+            "justMyCode": false 
         }
-    ]
+    ],
+    "justMyCode": false 
 }
