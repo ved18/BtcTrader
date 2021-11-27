@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'login.apps.LoginConfig',
     'signup.apps.SignupConfig',
-    'client.apps.ClientConfig'
+    'client.apps.ClientConfig',
+    'trader.apps.TraderConfig',
 ]
 
 MIDDLEWARE = [
@@ -57,7 +58,7 @@ ROOT_URLCONF = 'BtcTrader.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['/BtcTrader/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

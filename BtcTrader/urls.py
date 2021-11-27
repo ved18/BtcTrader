@@ -25,6 +25,9 @@ urlpatterns = [
     path('', loginViews.loginView, name='login'),
     path('signup/', signupViews.signupView),
     
+    #common
+    path('transactionHistory/<int:id>', clientViews.transactionHistoryView, name='transactionHistory'),
+
 
     #client
     path('home/<int:id>/', clientViews.homeView, name='home'),

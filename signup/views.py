@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from login.models import DB
 
 # Create your views here.
@@ -44,6 +44,6 @@ def signupView(request):
         insertClient = db.insertOrUpdateOrDelete(insertClientQuery, errorMsg)
 
         if insertEmail and insertPassword and insertClient:
-            return render(request, 'signup.html')
+            return redirect('login')
         
     return render(request, 'signup.html', context)

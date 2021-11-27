@@ -54,6 +54,14 @@ def editProfileView(request, id):
     
     if emailRow:
         context["email"] = emailRow[0][0]
-    
+    context["id"] = str(id)
 
     return render(request, 'editProfile.html', context)
+
+#view for transaction history
+def transactionHistoryView(request, id):
+    context = {
+        "id" : "",
+    }
+    context["id"] = str(id)
+    return render(request, 'transactionHistory.html', context)
