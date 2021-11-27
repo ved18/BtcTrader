@@ -23,8 +23,8 @@ def loginView(request):
 
         row = db.select(selectQuery, errorMsg)
 
-        if row:
+        if row[0][0] == password:
             context["success"] = True
-            return render(request, 'login.html')
+            return render(request, 'login.html', context)
 
-    return render(request, 'login.html')
+    return render(request, 'login.html', context)

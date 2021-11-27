@@ -5,6 +5,13 @@ from login.models import DB
 
 def signupView(request):
     db = DB()
+
+    context = {
+        "dataInserted" : False,
+        "signUpClicked" : True,
+
+    }
+    
     if request.POST.get("signupSubmit"):
         firstName = str(request.POST.get("firstName"))
         lastName = str(request.POST.get("lastName"))
@@ -39,4 +46,4 @@ def signupView(request):
         if insertEmail and insertPassword and insertClient:
             return render(request, 'signup.html')
         
-    return render(request, 'signup.html')
+    return render(request, 'signup.html', context)
