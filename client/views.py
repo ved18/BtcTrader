@@ -44,9 +44,18 @@ def editProfileView(request, id):
         "id" : "",
         "click" : False,
         "changed" : False,
+        "type" : "client",
     }
 
     context["id"] = str(id)
+
+    selectTypeQuery = "select type from login where id=" + str(id) +";"
+    errorMsg = "could not select type"
+
+    row = db.select(selectTypeQuery, errorMsg)
+    
+    if row:
+        context["type"] = row[0][0]
 
     if request.POST.get("epSubmit"):
         context["click"] = True
@@ -55,10 +64,13 @@ def editProfileView(request, id):
         oldPassword = str(request.POST.get("oldPassword"))
         if verifyPassword(oldPassword, id):
             if(newPassword == confirmPassword):
-                updateProfile(newPassword, id)
-                context["changed"] = True
-    
-    selectQuery = "select firstName, lastName, phoneNumber from client where id =" + str(id) + ";"
+                if updateProfile(newPassword, id):
+                    context["changed"] = True
+                    if context["type"] == "trader":
+                        return render(request, 'traderTransactionHistory.html', context)
+
+
+    selectQuery = "select firstName, lastName, phoneNumber from " + context["type"] + " where id =" + str(id) + ";"
     errorMsg = "Could not find the particular user in edit profile"
     clientRow = db.select(selectQuery, errorMsg)
 
@@ -74,8 +86,9 @@ def editProfileView(request, id):
     if emailRow:
         context["email"] = emailRow[0][0]
     
-
     return render(request, 'editProfile.html', context)
+    
+
 
 #view for transaction history
 def transactionHistoryView(request, id):
