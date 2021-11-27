@@ -16,9 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.conf.urls import url
-import client
 from login import views as loginViews
-import login
 from signup import views as signupViews
 from client import views as clientViews
 
@@ -29,6 +27,6 @@ urlpatterns = [
     
 
     #client
-    path('home/', clientViews.homeView, name='home'),
-    path('editProfile/', clientViews.editProfileView, name='editProfile'),
+    path('home/<int:id>/', clientViews.homeView, name='home'),
+    path('editProfile/<int:id>', clientViews.editProfileView, name='editProfile'),
 ]

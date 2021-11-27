@@ -1,21 +1,43 @@
 from django.shortcuts import render
-import client
+from django.template import context
 from login.models import DB
 # Create your views here.
 
-def homeView(request):
-    return render(request, 'homePage.html')
+def homeView(request, id):
+    context = {
+        "id" : "",
+    }
 
-def editProfileView(request):
+    context["id"] = id
+    return render(request, 'homePage.html', context)
+
+# update password for the user
+def updateProfile(newPassword, id):
+    updateQuery = "update login set password='" + newPassword + "' where id=" + id + ";"
+    errorMsg = "could not update password"
+
     db = DB()
+    row = db.insertOrUpdateOrDelete(updateQuery, errorMsg)
+    if row:
+        return True
+    return False
 
+
+def editProfileView(request, id):
+    db = DB()
     context = {
         "firstName" : "",
         "lastName" : "",
         "phoneNumber" : "",
         "email" : "",
+        "id" : "",
     }
 
+    if request.POST.get("editProfileSubmit"):
+        newPassword = str(request.get("newPassword"))
+        confirmPassword = str(request.get("confirmPassword"))
+        if(newPassword == confirmPassword):
+            updateProfile(newPassword, id)
     
     selectQuery = "select firstName, lastName, phoneNumber from client where id =" + str(id) + ";"
     errorMsg = "Could not find the particular user in edit profile"

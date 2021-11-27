@@ -9,18 +9,18 @@
 
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container-fluid">
-              <a class="navbar-brand" href="/home">BtcTrader</a>
+              <a class="navbar-brand" href="/home/{{id}}">BtcTrader</a>
               <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                   <li class="nav-item">
-                    <a class="nav-link {% if request.path == '/home/' %} active {% endif %}" aria-current="page" href="/home">Home</a>
+                    <a class="nav-link {% if request.path == '/home/' %} active {% endif %}" aria-current="page" href="/home/{{id}}">Home</a>
                   </li>
                   <li class="nav-item">
                     <a class="nav-link" href="#">Link</a>
                   </li>
 
                   <li class="nav-item">
-                    <a class="nav-link {% if request.path == '/editProfile/' %} active {% endif %}" href="/editProfile">EditProfile</a>
+                    <a class="nav-link {% if request.path == '/editProfile/' %} active {% endif %}" href="/editProfile/{{id}}">EditProfile</a>
                   </li>
                 </ul>
 
@@ -45,7 +45,8 @@
 
               <div class="tab-content pt-3">
                 <div class="tab-pane active">
-                  <form class="form" novalidate="">
+                  <form class="form" method="post">
+                    {% csrf_token %}
                     <div class="row">
                       <div class="col">
                         <div class="row">
@@ -66,14 +67,14 @@
                           <div class="col-12 col-sm-6 mb-3">
                             <div class="form-group">
                               <label>Email</label>
-                              <input class="form-control" type="text" value="{{ email }}">
+                              <input class="form-control" type="text" value="{{ email }}" disabled>
                             </div>
                           </div>
                         </div>
                         <div class="row">
                           <div class="col-12 col-sm-6 mb-3">
                             <label>Phone Number</label>
-                              <input class="form-control" type="text" value="{{ phoneNumber }}">
+                              <input class="form-control" type="text" value="{{ phoneNumber }}" name="phoneNumber">
                           </div>
                         </div>
                       </div>
@@ -93,7 +94,7 @@
                           <div class="col">
                             <div class="form-group">
                               <label>New Password</label>
-                              <input class="form-control" type="password">
+                              <input class="form-control" type="password" name="newPassword">
                             </div>
                           </div>
                         </div>
@@ -101,14 +102,14 @@
                           <div class="col">
                             <div class="form-group">
                               <label>Confirm <span class="d-none d-xl-inline">Password</span></label>
-                              <input class="form-control" type="password"></div>
+                              <input class="form-control" type="password" name="confirmPassword"></div>
                           </div>
                         </div>
                       </div>
                     </div>
                     <div class="row">
                       <div class="col d-flex justify-content-end">
-                        <button class="btn btn-primary" type="submit">Save Changes</button>
+                        <button class="btn btn-primary" type="submit" name="editProfileSubmit">Save Changes</button>
                       </div>
                     </div>
                   </form>
