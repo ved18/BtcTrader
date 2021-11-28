@@ -43,22 +43,39 @@
 
               </div>
             </div>
-          </nav>
+        </nav>
           <!-- end of navbar -->
-          <p>Welcome to transaction history page</p>
-          <table>
-            <tr>
-              <th>Reference No</th>
-              <th>Commission Type</th>
-              <th>Commission Amount</th>
-            </tr>
-            {% for index, tuple in details.enumerate %}
-            <tr>
-              <td>{{ tuple }}</td>
-              <td>{{ tuple }}</td>
-              <td>{{ tuple }}</td>
-            </tr>
-            {% endfor %}
-          </table>
-        </body>
+        <p>Welcome to transaction history page</p>
+        <div class="radio-toolbar" style="text-align: center;">
+          <input type="radio" id="client" name="radiob" value="client" checked>
+           <label for="client">Client</label><br>
+           <input type="radio" id="trader" name="radiob" value="trader">
+           <label for="trader">Trader</label><br>
+        </div>
+          
+        <table>
+          <tr>
+            <th>TransactionId</th>
+            <th>Transaction type</th>
+            <th>Bitcoins bought/sold</th>
+            <th>Amount spent/gained</th>
+            <th>Commission Type</th>
+            <th>Commission Amount</th>
+            <th>Date</th>
+            <th>Status</th>
+          </tr>
+          {% for index, tuple in details.enumerate %}
+          <tr>
+            <td>{{ tuple }}</td>
+            <td>{{ tuple }}</td>
+            <td>{{ tuple }}</td>
+            <td>{{ tuple }}</td>
+            <td>{{ tuple }}</td>
+            <td>{{ tuple }}</td>
+            <td>{{ tuple }}</td>
+            <td>{{ tuple }}</td>
+          </tr>
+          {% endfor %}
+        </table>
+    </body>
 </html>
