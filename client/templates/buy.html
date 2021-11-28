@@ -5,12 +5,6 @@
     </head>
     <style>
       @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
-  *{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Poppins',sans-serif;
-  }
  
   .container{
     max-width: 700px;
@@ -95,9 +89,7 @@
      background: #9b59b6;
      border-color: #d9d9d9;
    }
-   form input[type="radio"]{
-     display: none;
-   }
+   
    form .button{
      height: 45px;
      margin: 35px 0
@@ -159,7 +151,7 @@
                     <a class="nav-link {% if request.path == '/home/' %} active {% endif %}" aria-current="page" href="/home/{{id}}">Home</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="/transactionHistory/{{id}}">TrasnsactionHistory</a>
+                    <a class="nav-link" href="/transactionHistory/{{id}}">TransactionHistory</a>
                   </li>
                   <li class="nav-item">
                     <a class="nav-link" href="/buy/{{id}}">Buy</a>
@@ -207,11 +199,7 @@
                   <input type="radio" name="btcfiat" value="bitcoin">
                   <label for="css">Bitcoin</label>
                 </div>
-                <div class="input-box">
-                  <span class="details">Number Of Bitcoins :</span>
-                  <input name="lastName" type="text" placeholder="Bitcoins" required>
-                 </div>
-                </div>
+              </div>
                 <div class="button">
                     <input type="submit" name="buy" value="Buy Bitcoins">
                 </div>
