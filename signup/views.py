@@ -43,6 +43,7 @@ def signupView(request):
         insertClientQuery = "Insert into client values(" + id + ", '"+ firstName +"', '"+ lastName +"', '"+ state +"', '"+ city +"', '"+ street +"', " + zip + ", " + phoneNumber + ", " + cellNumber + ", 'silver');"
         insertTraderQuery = "Insert into trader values(" + id + ", '"+ firstName +"', '"+ lastName +"', '"+ state +"', '"+ city +"', '"+ street +"', " + zip + ", " + phoneNumber + ", " + cellNumber + ");"
         
+        insertClient = insertTrader = False
         if usertype == "client":
             insertClient = db.insertOrUpdateOrDelete(insertClientQuery, errorMsg)
         elif usertype == "trader":
