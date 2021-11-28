@@ -92,9 +92,43 @@ def editProfileView(request, id):
 
 #view for transaction history
 def transactionHistoryView(request, id):
+    
+    details = {
+        "transactionId" : 0,
+        "bitcoin" : 0,
+        "rate" : 0,
+        "commissionType" : "",
+        "date" : "",
+        "comissionAmount" : "",
+        "totalAmount" : "",
+        "orderType" : "",
+    }
     context = {
         "id" : "",
+        "details" : [],
     }
+
+    
+    db = DB()
+
+    selectQuery = "select tid, commissionType, totalAmount, commissionAmount, orderType, date, btcAmount, btcRate from transaction where clientId= " + str(id) + ";"
+    errorMsg = "could not find transactions"
+
+    row = db.select(selectQuery, errorMsg)
+    if row:
+        context["details"] = row
+    # if row:
+    #     context["transactionId"] = row[0][0]
+    #     context["commissionType"] = row[0][1]
+    #     context["amount"] = row[0][2]
+    #     context["comissionAmount"]= row[0][3]
+    #     context["orderType"] = row[0][4]
+    #     context["date"] = row[0][5]
+    #     context["bitcoin"] = row[0][6]
+    #     context["rate"] = row[0][7]
+
+
+
     context["id"] = str(id)
     return render(request, 'transactionHistory.html', context)
 
@@ -113,4 +147,3 @@ def sellView(request, id):
     }
     context["id"] = str(id)
     return render(request, 'sell.html', context)
-
