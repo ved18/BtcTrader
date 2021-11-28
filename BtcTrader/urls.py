@@ -32,4 +32,7 @@ urlpatterns = [
     #client
     path('home/<int:id>/', clientViews.homeView, name='home'),
     path('editProfile/<int:id>', clientViews.editProfileView, name='editProfile'),
+    path('buy/<int:id>', clientViews.buyView, name='buy'),
+    path('sell/<int:id>', clientViews.sellView, name='sell'),
+
 ]

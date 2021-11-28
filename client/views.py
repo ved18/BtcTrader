@@ -65,3 +65,19 @@ def transactionHistoryView(request, id):
     }
     context["id"] = str(id)
     return render(request, 'transactionHistory.html', context)
+
+#view for buy tab
+def buyView(request, id):
+    context = {
+        "id" : "",
+    }
+    context["id"] = str(id)
+    return render(request, 'buy.html', context)
+
+#view for sell tab
+def sellView(request, id):
+    context = {
+        "id" : "",
+    }
+    context["id"] = str(id)
+    return render(request, 'sell.html', context)
