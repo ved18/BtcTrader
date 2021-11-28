@@ -9,16 +9,25 @@
 
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container-fluid">
+              {% if type == "client" %}
               <a class="navbar-brand" href="/home/{{id}}">BtcTrader</a>
-              <div class="collapse navbar-collapse" id="navbarSupportedContent">
+              {% else %}
+                <a class="navbar-brand" href="/traderTransactionHistory/{{id}}">BtcTrader</a>
+              {% endif %}
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                  {% if type == "client" %}
                   <li class="nav-item">
                     <a class="nav-link {% if request.path == '/home/' %} active {% endif %}" aria-current="page" href="/home/{{id}}">Home</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="/transactionHistory/{{id}}">TrasnsactionHistory</a>
+                    <a class="nav-link" href="/transactionHistory/{{id}}">TransactionHistory</a>
                   </li>
-
+                  {% else %}
+                    <li class="nav-item">
+                      <a class="nav-link" href="/traderTransactionHistory/{{id}}">TransactionHistory</a>
+                    </li>
+                  {% endif %}
                   <li class="nav-item">
                     <a class="nav-link {% if request.path == '/editProfile/' %} active {% endif %}" href="/editProfile/{{id}}">EditProfile</a>
                   </li>
@@ -86,7 +95,7 @@
                           <div class="col">
                             <div class="form-group">
                               <label>Current Password</label>
-                              <input class="form-control" type="password">
+                              <input class="form-control" type="password" name="oldPassword">
                             </div>
                           </div>
                         </div>
@@ -109,11 +118,19 @@
                     </div>
                     <div class="row">
                       <div class="col d-flex justify-content-end">
-                        <button class="btn btn-primary" type="submit" name="editProfileSubmit">Save Changes</button>
+                        <button class="btn btn-primary" type="submit" name="epSubmit" value="epSubmit">Save Changes</button>
                       </div>
                     </div>
                   </form>
-
+                    {% if click == True and changed == False%}
+                        <div style="width: fit-content; color: red;" role="alert">
+                            Please try again.
+                        </div>
+                    {% elif click == True and changed == True%}
+                        <div style="width: fit-content; color: green;" role="alert">
+                            Edited Profile Sucessfully
+                        </div>
+                    {% endif %}
                 </div>
               </div>
             </div>

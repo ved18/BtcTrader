@@ -19,6 +19,7 @@ from django.conf.urls import url
 from login import views as loginViews
 from signup import views as signupViews
 from client import views as clientViews
+from trader import views as traderViews
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,13 +27,16 @@ urlpatterns = [
     path('signup/', signupViews.signupView),
     
     #common
-    path('transactionHistory/<int:id>', clientViews.transactionHistoryView, name='transactionHistory'),
+    path('editProfile/<int:id>', clientViews.editProfileView, name='editProfile'),
 
 
     #client
     path('home/<int:id>/', clientViews.homeView, name='home'),
-    path('editProfile/<int:id>', clientViews.editProfileView, name='editProfile'),
     path('buy/<int:id>', clientViews.buyView, name='buy'),
     path('sell/<int:id>', clientViews.sellView, name='sell'),
+    path('transactionHistory/<int:id>', clientViews.transactionHistoryView, name='transactionHistory'),
 
+    #trader
+    path('traderTransactionHistory/<int:id>', traderViews.transactionHistoryView),
+    path('traderBuySell/<int:id>', traderViews.buySellView),
 ]

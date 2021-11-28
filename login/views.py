@@ -9,11 +9,13 @@ def loginView(request):
     context = {
         "loginSubmit" : False,
         "success" : False,
-        "id" : ""
+        "id" : "",
+        "type" : "",
     }
     logout(request)
 
     db = DB()
+
 
     if request.POST.get("Login"):
         context["loginSubmit"] = True
@@ -34,6 +36,17 @@ def loginView(request):
             row = db.select(selectQuery, errorMsg)
             if row[0][0] == password:
                 context["success"] = True
-                return render(request, 'homePage.html', context)
+                selectTypeQuery = "select type from login where id=" + str(id) +";"
+                errorMsg = "could not select type"
+
+                row = db.select(selectTypeQuery, errorMsg)
+    
+                if row:
+                    context["type"] = row[0][0]
+                
+                if context["type"] == 'client':
+                    return render(request, 'homePage.html', context)
+                else:
+                    return render(request, 'traderTransactionHistory.html', context)
 
     return render(request, 'login.html', context)

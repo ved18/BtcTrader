@@ -13,7 +13,7 @@ def homeView(request, id):
 
 # update password for the user
 def updateProfile(newPassword, id):
-    updateQuery = "update login set password='" + newPassword + "' where id=" + id + ";"
+    updateQuery = "update login set password='" + newPassword + "' where id=" + str(id) + ";"
     errorMsg = "could not update password"
 
     db = DB()
@@ -22,6 +22,17 @@ def updateProfile(newPassword, id):
         return True
     return False
 
+#function to verify old password for editing
+def verifyPassword(oldPassword, id):
+    selectPassword = "select password from login where id=" + str(id) +";"
+    errorMsg = "could not find old password"
+
+    db = DB()
+    row = db.select(selectPassword, errorMsg)
+
+    if row[0][0] == oldPassword:
+        return True
+    return False
 
 def editProfileView(request, id):
     db = DB()
@@ -31,15 +42,35 @@ def editProfileView(request, id):
         "phoneNumber" : "",
         "email" : "",
         "id" : "",
+        "click" : False,
+        "changed" : False,
+        "type" : "client",
     }
 
-    if request.POST.get("editProfileSubmit"):
-        newPassword = str(request.get("newPassword"))
-        confirmPassword = str(request.get("confirmPassword"))
-        if(newPassword == confirmPassword):
-            updateProfile(newPassword, id)
+    context["id"] = str(id)
+
+    selectTypeQuery = "select type from login where id=" + str(id) +";"
+    errorMsg = "could not select type"
+
+    row = db.select(selectTypeQuery, errorMsg)
     
-    selectQuery = "select firstName, lastName, phoneNumber from client where id =" + str(id) + ";"
+    if row:
+        context["type"] = row[0][0]
+
+    if request.POST.get("epSubmit"):
+        context["click"] = True
+        newPassword = str(request.POST.get("newPassword"))
+        confirmPassword = str(request.POST.get("confirmPassword"))
+        oldPassword = str(request.POST.get("oldPassword"))
+        if verifyPassword(oldPassword, id):
+            if(newPassword == confirmPassword):
+                if updateProfile(newPassword, id):
+                    context["changed"] = True
+                    if context["type"] == "trader":
+                        return render(request, 'traderTransactionHistory.html', context)
+
+
+    selectQuery = "select firstName, lastName, phoneNumber from " + context["type"] + " where id =" + str(id) + ";"
     errorMsg = "Could not find the particular user in edit profile"
     clientRow = db.select(selectQuery, errorMsg)
 
@@ -54,9 +85,10 @@ def editProfileView(request, id):
     
     if emailRow:
         context["email"] = emailRow[0][0]
-    context["id"] = str(id)
-
+    
     return render(request, 'editProfile.html', context)
+    
+
 
 #view for transaction history
 def transactionHistoryView(request, id):
@@ -81,3 +113,4 @@ def sellView(request, id):
     }
     context["id"] = str(id)
     return render(request, 'sell.html', context)
+
