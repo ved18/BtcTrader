@@ -46,13 +46,7 @@
         </nav>
           <!-- end of navbar -->
         <p>Welcome to transaction history page</p>
-        <div class="radio-toolbar" style="text-align: center;">
-          <input type="radio" id="client" name="radiob" value="client" checked>
-           <label for="client">Client</label><br>
-           <input type="radio" id="trader" name="radiob" value="trader">
-           <label for="trader">Trader</label><br>
-        </div>
-          
+         
         <table>
           <tr>
             <th>TransactionId</th>
@@ -64,16 +58,16 @@
             <th>Date</th>
             <th>Status</th>
           </tr>
-          {% for index, tuple in details.enumerate %}
+          {% for tuple in details %}
           <tr>
-            <td>{{ tuple }}</td>
-            <td>{{ tuple }}</td>
-            <td>{{ tuple }}</td>
-            <td>{{ tuple }}</td>
-            <td>{{ tuple }}</td>
-            <td>{{ tuple }}</td>
-            <td>{{ tuple }}</td>
-            <td>{{ tuple }}</td>
+            <td>{{  tuple.transactionId}}</td>
+            <td>{{ tuple.commissionType }}</td>
+            <td>{{ tuple.amount }}</td>
+            <td>{{ tuple.comissionAmount }}</td>
+            <td>{{ tuple.orderType }}</td>
+            <td>{{ tuple.date }}</td>
+            <td>{{ tuple.bitcoin }}</td>
+            <td>{{ tuple.rate }}</td>
           </tr>
           {% endfor %}
         </table>

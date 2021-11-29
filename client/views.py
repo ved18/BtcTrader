@@ -93,16 +93,7 @@ def editProfileView(request, id):
 #view for transaction history
 def transactionHistoryView(request, id):
     
-    details = {
-        "transactionId" : 0,
-        "transactiontype":"",
-        "totalamount":0,
-        "bitcoin" : 0,
-        "commissionType" : "",
-        "comissionAmount" : "",
-        "date" : "",
-        "status" : "",
-    }
+
     context = {
         "id" : "",
         "details" : [],
@@ -111,24 +102,25 @@ def transactionHistoryView(request, id):
     
     db = DB()
 
-    selectQuery = "select tid, ordertype, totalAmount, btcAmount, commissionType, commission, date, status from transaction where  clientId= "+ str(id) +" && trandeId is Null" ";"
+    selectQuery = "select tid, ordertype, totalAmount, btcAmount, commissionType, commissionAmount, date, status from transaction where  clientId= "+ str(id) +" && traderId is NULL" ";"
     errorMsg = "could not find transactions"
 
     row = db.select(selectQuery, errorMsg)
+    transactionInfo = []
     if row:
-        context["details"] = row
-    # if row:
-    #     context["transactionId"] = row[0][0]
-    #     context["commissionType"] = row[0][1]
-    #     context["amount"] = row[0][2]
-    #     context["comissionAmount"]= row[0][3]
-    #     context["orderType"] = row[0][4]
-    #     context["date"] = row[0][5]
-    #     context["bitcoin"] = row[0][6]
-    #     context["rate"] = row[0][7]
+        for i in row:
+            temp = {}
+            temp["transactionId"] = i[0]
+            temp["commissionType"] = i[1]
+            temp["amount"] = i[2]
+            temp["comissionAmount"]= i[3]
+            temp["orderType"] = i[4]
+            temp["date"] = i[5]
+            temp["bitcoin"] = i[6]
+            temp["rate"] = i[7]
 
-
-
+            transactionInfo.append(temp)
+    context["details"] = transactionInfo
     context["id"] = str(id)
     return render(request, 'transactionHistory.html', context)
 
