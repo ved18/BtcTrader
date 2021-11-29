@@ -111,7 +111,7 @@ def transactionHistoryView(request, id):
     
     db = DB()
 
-    selectQuery = "select tid, ordertype, totalAmount, btcAmount, commissionType, commission, date, status from transaction where  clientId= "+ str(id) + ";"
+    selectQuery = "select tid, ordertype, totalAmount, btcAmount, commissionType, commission, date, status from transaction where  clientId= "+ str(id) +" && trandeId is Null" ";"
     errorMsg = "could not find transactions"
 
     row = db.select(selectQuery, errorMsg)
@@ -128,6 +128,37 @@ def transactionHistoryView(request, id):
     #     context["rate"] = row[0][7]
 
 
+
+    context["id"] = str(id)
+    return render(request, 'transactionHistory.html', context)
+
+#view for transaction history
+def transactionHistoryByTraderView(request, id):
+    
+    details = {
+        "transactionId" : 0,
+        "traderId":0,
+        "transactiontype":"",
+        "totalamount":0,
+        "bitcoin" : 0,
+        "commissionType" : "",
+        "comissionAmount" : "",
+        "date" : "",
+        "status" : "",
+    }
+    context = {
+        "id" : "",
+        "details" : [],
+    }
+
+    db = DB()
+
+    selectQuery = "select tid, traderId, ordertype, totalAmount, btcAmount, commissionType, commission, date, status from transaction where  clientId= "+ str(id) +" && trandeId is Not Null" ";"
+    errorMsg = "could not find transactions"
+
+    row = db.select(selectQuery, errorMsg)
+    if row:
+        context["details"] = row
 
     context["id"] = str(id)
     return render(request, 'transactionHistory.html', context)
