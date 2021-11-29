@@ -1,3 +1,4 @@
+from django.db import connection
 from django.shortcuts import render
 from django.template import context
 from login.models import DB
@@ -102,6 +103,7 @@ def transactionHistoryView(request, id):
 def buyView(request, id):
     context = {
         "id" : "",
+        "verification" : True,
     }
     context["id"] = str(id)
     return render(request, 'buy.html', context)
@@ -110,7 +112,83 @@ def buyView(request, id):
 def sellView(request, id):
     context = {
         "id" : "",
+        "verification" : False,
+        "btcCap" : False,
     }
     context["id"] = str(id)
+    db = DB()
+
+    if request.POST.get("sellSubmit"):
+        username = request.POST.get("userName")
+        sellBitcoins = request.POST.get("bitcoins")
+        balance = request.POST.get("balance")
+        commType = request.POST.get("btcFiat")
+
+        #query to get id of user i.e. either user or trader
+        selectQuery = "select id from users where username='" + username + "';"
+        errorMsg = "couldnt find user"
+
+        row = db.select(selectQuery, errorMsg)
+        if row:
+            userid = row[0][0]
+        else:
+            context["verification"] = False
+            return render(request, 'transactionHistory.html', context)
+
+        #query to check bitcoins in users wallet
+        selectQuery = "select btcAmount from wallet where userId= " + userid + ";"
+        errorMsg = "could not fetch number bitcoins from wallet"
+
+        row = db.select(selectQuery, errorMsg)
+        if row:
+            totalBitcoins = row[0][0]
+        else:
+            context["verification"] = False
+            return render(request, 'transactionHistory.html', context)
+
+        if totalBitcoins < sellBitcoins:
+            context["btcCap"] = True
+            return render(request, 'transactionHistory.html', context)
+
+        #calculate remaining btc to update user wallet and also update bank wallet
+        updateBtcUser = totalBitcoins - sellBitcoins
+        currentRate = 10
+
+        #get rate of user depending on type
+        selectTypeQuery = "select type from client where id=" + id + ";"
+        errorMsg = "could not find type from client in sellView"
+
+        row = db.select(selectTypeQuery, errorMsg)
+        if row:
+            userCategory = row[0][0]
+
+        if userCategory == "silver":
+            getRateQuery = "select commissionSilver from metada;"
+        else:
+            getRateQuery = "select commissionGold from metadata;"
+
+        errorMsg = "cannot get the rate from metadata"
+
+        row = db.select(getRateQuery, errorMsg)
+        if row:
+            commissionRate = row[0][0]
+        
+        #need to update bitcoin rate here from coindesk api
+        currentBtcRate = 10
+        totalAmount = sellBitcoins * currentBtcRate
+        commissionAmount = totalAmount * (commissionRate/100)
+        metaCurrency = totalAmount - commissionAmount
+        #total amount obtained after selling bitcoin
+
+        #update user wallet
+        #add to transaction
+        #add to metadata
+        updateMetaQuery = "Update metadata set totalBtc=totalBtc +" + sellBitcoins + ", totalCurrency=totalCurrency-" + metaCurrency + ";" 
+        errorMsg = "cannot update metadata"
+        row = db.select(updateMetaQuery, errorMsg)
+
+
+        if row:
+            return render(request, 'transactionHistory.html', context)
     return render(request, 'sell.html', context)
 
