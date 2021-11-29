@@ -319,29 +319,30 @@ def sellView(request, id):
     db = DB()
 
     if request.POST.get("sellSubmit"):
-        username = request.POST.get("userName")
-        sellBitcoins = request.POST.get("bitcoins")
+        username = str(request.POST.get("userName"))
+        sellBitcoins = float(request.POST.get("bitcoins"))
         balance = request.POST.get("balance")
-        commType = request.POST.get("btcFiat")
+        commType = request.POST.get("btcfiat")
 
-        #query to get id of user i.e. either user or trader
+        #query to get id of client
         selectQuery = "select id from users where username='" + username + "';"
         errorMsg = "couldnt find user"
 
         row = db.select(selectQuery, errorMsg)
         if row:
-            userid = row[0][0]
+            clientId = row[0][0]
         else:
             context["verification"] = False
             return render(request, 'transactionHistory.html', context)
 
         #query to check bitcoins in users wallet
-        selectQuery = "select btcAmount from wallet where userId= " + userid + ";"
+        selectQuery = "select id, btcAmount from wallet where userId= " + str(clientId) + ";"
         errorMsg = "could not fetch number bitcoins from wallet"
 
         row = db.select(selectQuery, errorMsg)
         if row:
-            totalBitcoins = row[0][0]
+            walletId = row[0][0]
+            totalBitcoins = row[0][1]
         else:
             context["verification"] = False
             return render(request, 'transactionHistory.html', context)
@@ -355,7 +356,7 @@ def sellView(request, id):
         currentRate = 10
 
         #get rate of user depending on type
-        selectTypeQuery = "select type from client where id=" + id + ";"
+        selectTypeQuery = "select type from client where id=" + str(clientId) + ";"
         errorMsg = "could not find type from client in sellView"
 
         row = db.select(selectTypeQuery, errorMsg)
@@ -363,7 +364,7 @@ def sellView(request, id):
             userCategory = row[0][0]
 
         if userCategory == "silver":
-            getRateQuery = "select commissionSilver from metada;"
+            getRateQuery = "select commissionSilver from metadata;"
         else:
             getRateQuery = "select commissionGold from metadata;"
 
@@ -381,15 +382,24 @@ def sellView(request, id):
         #total amount obtained after selling bitcoin
 
         #update user wallet
+        updateBtcWalletQuery = "update wallet set btcAmount=" + str(updateBtcUser) + "where userId=" + str(clientId) + ";"
+        errorMsg = "could not update client wallet after sell"
+
+        row = db.insertOrUpdateOrDelete(updateBtcWalletQuery, errorMsg)
+
+        updateWalletFiatQuery = "update wallet set accountBalance=accountBalance+" + str(metaCurrency) + " where userId=" + str(clientId) + ";"
+        errorMsg = "could not update user wallet for amount"
+
+        row = db.insertOrUpdateOrDelete(updateWalletFiatQuery, errorMsg)
+        
         #add to transaction
+        addtransaction(context, id, commType, totalAmount, commissionAmount, "sell", sellBitcoins, currentBtcRate, clientId)
+
         #add to metadata
-        updateMetaQuery = "Update metadata set totalBtc=totalBtc +" + sellBitcoins + ", totalCurrency=totalCurrency-" + metaCurrency + ";" 
+        updateMetaQuery = "Update metadata set totalBtc=totalBtc +" + str(sellBitcoins) + ", totalCurrency=totalCurrency-" + str(metaCurrency) + ";" 
         errorMsg = "cannot update metadata"
         row = db.select(updateMetaQuery, errorMsg)
 
-
-        if row:
-            return render(request, 'transactionHistory.html', context)
     return render(request, 'sell.html', context)
 
 #view for wallet tab
