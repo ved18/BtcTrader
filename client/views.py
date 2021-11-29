@@ -6,11 +6,57 @@ from login.models import DB
 
 def homeView(request, id):
     context = {
-        "id" : "",
+        "firstName":"",
+        "btcAmount":"",
+        "accountBalance":"",
+        "investmentAmount":"",
+        "netgainloss":"",
+        "t1":0,
+        "t2":0,
+        "ans":"",
     }
+    db = DB()
+    context["id"] = str(id)
+    selectUsername="select firstName from client where id=" + str(id) +";"
+    errorMsg = "could not select required values"
+    clientRowUsername=db.select(selectUsername,errorMsg)
+    if clientRowUsername:
+        context["firstName"]=clientRowUsername[0][0]
 
-    context["id"] = id
+    selectInvestment="select investmentAmount  from portfolio where id=" + str(id) +";"
+    errorMsg = "could not select required values"
+    clientRowInv=db.select(selectInvestment,errorMsg)
+    if clientRowInv:
+        context["investmentAmount"]=clientRowInv[0][0]
+
+    selectTypeQuery = "select btcAmount, accountBalance from wallet where userId=" + str(id) +";"
+    errorMsg = "could not select required values"
+    clientRow = db.select(selectTypeQuery, errorMsg)
+    if clientRow:
+        context["btcAmount"] = clientRow[0][0]
+        context["accountBalance"] = clientRow[0][1]
+    
+
+    resQuery="select totalBtc from portfolio where id=" + str(id) +";"
+    clientRow1 = db.select(resQuery, errorMsg)
+    if clientRow1:
+        context["t1"] = clientRow1[0][0]
+    
+    selectInvestment="select investmentAmount from portfolio where id=" + str(id) +";"
+    clientRow2 = db.select(selectInvestment, errorMsg)
+    if clientRow2:
+        context["t2"] = clientRow2[0][0]
+    
+    currentRate=10
+    #assuming the currentRate value for the bitcoin as 10.
+    ans=currentRate*(context["t1"])-(context["t2"])
+    if(ans>0):
+        context["ans"]="Profit "+str(ans)
+    else:
+        context["ans"]="Loss "+str(ans)
+
     return render(request, 'homePage.html', context)
+
 
 # update password for the user
 def updateProfile(newPassword, id):

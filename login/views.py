@@ -46,6 +46,7 @@ def loginView(request):
                 
                 if context["type"] == 'client':
                     return render(request, 'homePage.html', context)
+                    #return redirect('home/123')
                 else:
                     return render(request, 'traderTransactionHistory.html', context)
 
