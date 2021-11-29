@@ -147,12 +147,19 @@
               <a class="navbar-brand" href="/home/{{id}}">BtcTrader</a>
               <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                  {% if userType == "client" %}
                   <li class="nav-item">
                     <a class="nav-link {% if request.path == '/home/' %} active {% endif %}" aria-current="page" href="/home/{{id}}">Home</a>
                   </li>
+                  
                   <li class="nav-item">
                     <a class="nav-link" href="/transactionHistory/{{id}}">TransactionHistory</a>
                   </li>
+                  {% else %}
+                    <li class="nav-item">
+                      <a class="nav-link" href="/traderTransactionHistory/{{id}}">TransactionHistory</a>
+                    </li>
+                  {% endif %}
                   <li class="nav-item">
                     <a class="nav-link" href="/buy/{{id}}">Buy</a>
                   </li>
@@ -160,7 +167,9 @@
                     <a class="nav-link" href="/sell/{{id}}">Sell</a>
                   </li>
                   <li class="nav-item">
-                    
+                    <a class="nav-link" href="/wallet/{{id}}">Wallet</a>
+                  </li>
+                  <li class="nav-item">
                     <a class="nav-link {% if request.path == '/editProfile/' %} active {% endif %}" href="/editProfile/{{id}}">  EditProfile </a>     
                 </li>
                 </ul>
@@ -179,19 +188,19 @@
                 <div class="user-details">
                     <div class="input-box">
                         <span class="details">Enter your Username :</span>
-                        <input name="lastName" type="text" placeholder="Username" required>
+                        <input name="userName" type="text" placeholder="Username" required>
                     </div>
                     <div class="input-box">
                       <span class="details">Current Bitcon Rate :</span>
-                      <input name="firstName" type="text" placeholder="Btc Rate" required>
+                      <input name="rate" type="text" placeholder="Btc Rate" required>
                     </div>
                      <div class="input-box">
                          <span class="details">Number Of Bitcoins to sell :</span>
-                         <input name="firstName" type="text" placeholder="Bitcoins" required>
+                         <input name="bitcoins" type="text" placeholder="Bitcoins" required>
                     </div>
                     <div class="input-box">
                         <span class="details">Number of Bitcoins in wallet :</span>
-                        <input name="lastName" type="text" placeholder="Wallet balance" required>
+                        <input name="balance" type="text" placeholder="Wallet balance" required>
                     </div>
                 </div>
                     <div>
@@ -202,7 +211,7 @@
                         <label for="css">Bitcoin</label>
                     </div>
                     <div class="button">
-                      <input type="submit" name="sell" value="Sell Bitcoins">
+                      <input type="submit" name="sellSubmit" value="Sell Bitcoins">
                     </div>
                 
           </form>

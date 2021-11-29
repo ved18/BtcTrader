@@ -35,6 +35,7 @@ urlpatterns = [
     path('home/<int:id>/', clientViews.homeView, name='home'),
     path('buy/<int:id>', clientViews.buyView, name='buy'),
     path('sell/<int:id>', clientViews.sellView, name='sell'),
+    path('wallet/<int:id>', clientViews.walletView, name='wallet'),
     path('transactionHistory/<int:id>', clientViews.transactionHistoryView, name='transactionHistory'),
 
     #trader

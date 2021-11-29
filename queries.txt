@@ -10,3 +10,8 @@ create table portfolio(id int NOT NULL, investmentAmount float NOT NULL, totalBt
 create table metaData(totalBtc float NOT NULL, totalCurrency float NOT NULL, commissionGold float NOT NULL DEFAULT(2.5), commissionSilver float NOT NULL DEFAULT(5));
 create table manager(username varchar(255) NOT NULL, password varchar(255) NOT NULL, PRIMARY KEY(username));
 Alter table users ADD UNIQUE(username);
+alter table transaction modify column tid int AUTO_INCREMENT Not Null;
+SET FOREIGN_KEY_CHECKS=0;
+alter table wallet modify column id int AUTO_INCREMENT Not Null;
+SET FOREIGN_KEY_CHECKS=1;
+alter table transaction modify traderId int;
