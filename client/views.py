@@ -417,10 +417,17 @@ def sellView(request, id):
         "id" : "",
         "verification" : False,
         "btcCap" : False,
+        "userType" : ""
     }
     context["id"] = str(id)
     db = DB()
+    #find user type
+    selectUserType = "select type from login where id=" + str(id) + ";"
+    errorMsg = "cannot find user type in buyview"
 
+    row = db.select(selectUserType, errorMsg)
+    if row:
+        context["userType"] = row[0][0]
     if request.POST.get("sellSubmit"):
         username = str(request.POST.get("userName"))
         sellBitcoins = float(request.POST.get("bitcoins"))
