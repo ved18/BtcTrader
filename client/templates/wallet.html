@@ -147,7 +147,7 @@
               <a class="navbar-brand" href="/home/{{id}}">BtcTrader</a>
               <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                  {% if userType == "client" %}
+                  {% if type == "client" %}
                   <li class="nav-item">
                     <a class="nav-link {% if request.path == '/home/' %} active {% endif %}" aria-current="page" href="/home/{{id}}">Home</a>
                   </li>
