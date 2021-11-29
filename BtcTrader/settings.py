@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'signup.apps.SignupConfig',
     'client.apps.ClientConfig',
     'trader.apps.TraderConfig',
+    'manager.apps.ManagerConfig'
 ]
 
 MIDDLEWARE = [
@@ -84,7 +85,7 @@ DATABASES = {
         'USER': 'root',
         'HOST': 'localhost',
         'PORT': 3306,
-        'PASSWORD': '',
+        'PASSWORD': 'anu_1234',
     }
 }
 

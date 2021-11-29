@@ -20,6 +20,7 @@ from login import views as loginViews
 from signup import views as signupViews
 from client import views as clientViews
 from trader import views as traderViews
+from manager import views as managerViews
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -39,4 +40,9 @@ urlpatterns = [
     #trader
     path('traderTransactionHistory/<int:id>', traderViews.transactionHistoryView),
     path('traderBuySell/<int:id>', traderViews.buySellView),
+
+    #manager
+    path('managerlogin/', managerViews.managerloginView, name='manager'),
+    path('managerhome/', managerViews.managerhomeView, name='manager'),
+    path('managerTransactions/', managerViews.managertransactionView, name='manager'),
 ]
