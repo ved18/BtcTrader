@@ -159,7 +159,7 @@
                     <li class="nav-item">
                       <a class="nav-link" href="/traderTransactionHistory/{{id}}">TransactionHistory</a>
                     </li>
-                  {% endif %}
+                  {% endif %}                  
                   <li class="nav-item">
                     <a class="nav-link" href="/buy/{{id}}">Buy</a>
                   </li>
@@ -179,63 +179,29 @@
           </nav>
          <!-- navbar ends -->
 
-        <!-- starting buy/sell page -->
+        <!-- wallet form starts -->
+        
     <div class="container">
         <div class="content">
           <form method="post">
               {% csrf_token %}
             <div class="user-details">
                 <div class="input-box">
-                    <span class="details">Enter your Username</span>
-                    <input name="username" type="text" placeholder="Username" required>
+                 <span class="details">Available Bitcoin in Wallet :</span>
+                 <input name="fiatamt" type="text" value="{{ btcbalance }} Bitcoins" readonly>
                 </div>
                 <div class="input-box">
-                    <span class="details">Current Bitcon Rate</span>
-                    <input name="currbtcrate" type="text" value="{{ btcrate }}/Bitcoin" readonly>
-                </div>
-                <div class="input-box">
-                 <span class="details">Amount to be invested in $</span>
-                 <input name="fiatamt" type="text" pattern="[0-9]{1,}.[0-9]{2}" placeholder="$0.0" required>
-                </div>
-                <div class="input-box">
-                 <span class="details">Available Amount in Wallet</span>
-                 <input name="wallamt" type="text" value="${{ accountbalance }}" readonly>
-                </div>
-                {% if userType == "client" %}
-                <div class="input-box">
-                  <span class="details">Commission rate</span>
-                  <input name="commrate" type="text" value="{{ commrate }}%" readonly>
-                 </div>
-                 {% endif %}
+                 <span class="details">Available Fiat in Wallet :</span>
+                 <input name="wallamt" type="text" value="${{ fiatbalance }}" readonly>
+                </div>  
             </div>
-                <div>
-                  <h6>Please select the form of commission</h6>
-                  <input type="radio" name="btcfiat" value="fiat" required>
-                  <label for="html">Fiat($)</label>
-                  <input type="radio" name="btcfiat" value="bitcoin" required>
-                  <label for="css">Bitcoin</label>
-                </div>
-              
-                <div class="button">
-                    <input type="submit" name="buysubmit" value="Buy">
-                </div>      
+            <div>
+
+            </div>
           </form>
-          {% if click == True and nameverified == False%}
-          <div style="width: fit-content; color: red;" role="alert">
-              Enter correct username
-          </div>
-      {% elif click == True and balanceverified == False%}
-          <div style="width: fit-content; color: red;" role="alert">
-              Not sufficient balance
-          </div>
-          {% elif click == True and transactionadded == False%}
-          <div style="width: fit-content; color: red;" role="alert">
-              Transaction err
-          </div>
-      {% endif %}
-    </div>
-    </div>
-        <!-- end buy/sell page -->
+
+
+        <!-- wallet ends -->
 
         <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script> -->
     </body>
