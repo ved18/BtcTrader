@@ -79,3 +79,21 @@ class DB:
             return False
 
         return True
+
+class Transaction(models.Model):
+    tid = models.IntegerField(primary_key=True)
+    clientid = models.IntegerField('Users',db_column='clientId')  # Field name made lowercase.
+    traderid = models.IntegerField('Users', db_column='traderId')  # Field name made lowercase.
+    commissiontype = models.CharField(db_column='commissionType', max_length=255)  # Field name made lowercase.
+    totalamount = models.FloatField(db_column='totalAmount')  # Field name made lowercase.
+    commissionamount = models.FloatField(db_column='commissionAmount')  # Field name made lowercase.
+    ordertype = models.CharField(db_column='orderType', max_length=255)  # Field name made lowercase.
+    status = models.CharField(max_length=255)
+    date = models.DateTimeField()
+    btcamount = models.FloatField(db_column='btcAmount')  # Field name made lowercase.
+    btcrate = models.FloatField(db_column='btcRate')  # Field name made lowercase.
+    walletid = models.IntegerField('Wallet', db_column='walletId')  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'transaction'
