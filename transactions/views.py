@@ -17,6 +17,4 @@ def viewtransaction(request):
     	else:
     		if(idType=="trader"):
     			st=Transaction.objects.filter(traderid=id)
-    print(st) # Collect all records from table 
-    # return render(request,'display.html',{'st':st})
     return render(request, 'transactions.html',{'st':st})
