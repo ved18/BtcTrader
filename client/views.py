@@ -333,7 +333,10 @@ def buyView(request):
     }
     id = request.session.get('userId')
     context["id"] = id
-    
+    response = requests.get('https://api.coindesk.com/v1/bpi/currentprice.json')
+    btcRateJson = response.json()
+    currentBtcRate = btcRateJson['bpi']['USD']['rate_float']
+    context['btcrate'] = currentBtcRate
     #find user type
     selectUserType = "select type from login where id=" + str(id) + ";"
     errorMsg = "cannot find user type in buyview"
@@ -415,7 +418,7 @@ def buyView(request):
 
 
         commrate = float(context["commrate"])
-        btcrate = float(context["btcrate"])
+        btcrate = currentBtcRate
         finalbitcoins = 0.0
         if verifyUsername(newusername, userId):
             context["nameverified"] = True
@@ -458,7 +461,7 @@ def sellView(request):
     response = requests.get('https://api.coindesk.com/v1/bpi/currentprice.json')
     btcRateJson = response.json()
     currentBtcRate = btcRateJson['bpi']['USD']['rate_float']
-
+    context['btcRate'] = currentBtcRate
     db = DB()
     #find user type
     selectUserType = "select type from login where id=" + str(id) + ";"
