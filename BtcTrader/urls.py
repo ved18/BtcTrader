@@ -29,18 +29,17 @@ urlpatterns = [
     
     #common
     path('editProfile/', clientViews.editProfileView, name='editProfile'),
-
+    path('buy/', clientViews.buyView, name='buy'),
+    path('sell/', clientViews.sellView, name='sell'),
 
     #client
     path('home/', clientViews.homeView, name='home'),
-    path('buy/<int:id>', clientViews.buyView, name='buy'),
-    path('sell/<int:id>', clientViews.sellView, name='sell'),
-    path('wallet/<int:id>', clientViews.walletView, name='wallet'),
-    path('transactionHistory/<int:id>', clientViews.transactionHistoryView, name='transactionHistory'),
+    
+    path('wallet/', clientViews.walletView, name='wallet'),
+    path('transactionHistory/', clientViews.transactionHistoryView, name='transactionHistory'),
 
     #trader
-    path('traderTransactionHistory/<int:id>', traderViews.transactionHistoryView, name='traderTransaction'),
-    path('traderBuySell/<int:id>', traderViews.buySellView),
+    path('traderTransactionHistory/', traderViews.transactionHistoryView, name='traderTransaction'),
 
     #manager
     path('managerlogin/', managerViews.managerloginView, name='manager'),

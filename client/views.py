@@ -45,7 +45,7 @@ def homeView(request):
         context["accountBalance"] = clientRow[0][1]
     
 
-    resQuery="select totalBtc from portfolio where id=(id)"
+    resQuery="select totalBtc from portfolio where id=(%s)"
     param = (id,)
     errorMsg = "could not fetch total bitcoins homeview"
     clientRow1 = db.selectPrepared(resQuery, param, errorMsg)
@@ -53,7 +53,7 @@ def homeView(request):
         context["t1"] = clientRow1[0][0]
     
     selectInvestment="select investmentAmount from portfolio where id=(%s)"
-    param = (id)
+    param = (id,)
     clientRow2 = db.selectPrepared(selectInvestment, param, errorMsg)
     if clientRow2:
         context["t2"] = clientRow2[0][0]
@@ -196,7 +196,7 @@ def editProfileView(request):
         "lastName" : "",
         "phoneNumber" : "",
         "email" : "",
-        "id" : "",
+        "id" : -1,
         "click" : False,
         "changed" : False,
         "type" : "client",
@@ -226,7 +226,7 @@ def editProfileView(request):
     if userType == 'client':
         selectQuery = "select firstName, lastName, phoneNumber from client where id = (%s)"
     else:
-        "select firstName, lastName, phoneNumber from trader where id = (%s)"
+        selectQuery = "select firstName, lastName, phoneNumber from trader where id = (%s)"
     errorMsg = "Could not find the particular user in edit profile"
     params = (id,)
     clientRow = db.selectPrepared(selectQuery, params, errorMsg)
@@ -249,15 +249,15 @@ def editProfileView(request):
 
 
 #view for transaction history
-def transactionHistoryView(request, id):
+def transactionHistoryView(request):
     
 
     context = {
-        "id" : "",
+        "id" : -1,
         "details" : [],
     }
 
-    
+    id = request.session.get('userId')
     db = DB()
 
     selectQuery = "select tid, ordertype, totalAmount, btcAmount, commissionType, commissionAmount, date, status from transaction where  clientId= "+ str(id) +" && traderId is NULL" ";"
@@ -279,11 +279,11 @@ def transactionHistoryView(request, id):
 
             transactionInfo.append(temp)
     context["details"] = transactionInfo
-    context["id"] = str(id)
+    context["id"] = id
     return render(request, 'transactionHistory.html', context)
 
 #view for transaction history
-def transactionHistoryByTraderView(request, id):
+def transactionHistoryByTraderView(request):
     
     details = {
         "transactionId" : 0,
@@ -297,10 +297,11 @@ def transactionHistoryByTraderView(request, id):
         "status" : "",
     }
     context = {
-        "id" : "",
+        "id" : -1,
         "details" : [],
     }
-
+    id = request.session.get('userId')
+ 
     db = DB()
 
     selectQuery = "select tid, traderId, ordertype, totalAmount, btcAmount, commissionType, commission, date, status from transaction where  clientId= "+ str(id) +" && trandeId is Not Null" ";"
@@ -310,11 +311,11 @@ def transactionHistoryByTraderView(request, id):
     if row:
         context["details"] = row
 
-    context["id"] = str(id)
+    context["id"] = id
     return render(request, 'transactionHistory.html', context)
 
 #view for buy tab
-def buyView(request, id):
+def buyView(request):
     db = DB()
     context = {
         "accountbalance" : "",
@@ -329,7 +330,8 @@ def buyView(request, id):
         "userType" : "client",
         "transactionadded" : False,
     }
-    context["id"] = str(id)
+    id = request.session.get('userId')
+    context["id"] = id
     
     #find user type
     selectUserType = "select type from login where id=" + str(id) + ";"
@@ -383,7 +385,8 @@ def buyView(request, id):
 
         db = DB()
         row = db.select(selectId,errorMsg)
-        userId = row[0][0]
+        if row:
+            userId = row[0][0]
 
         #find commission rate for the user of trader
         selectUserCommType = "select type from client where id=" + str(userId) + ";"
@@ -439,14 +442,17 @@ def buyView(request, id):
 
 
 #view for sell tab
-def sellView(request, id):
+def sellView(request):
     context = {
-        "id" : "",
+        "id" : -1,
         "verification" : False,
         "btcCap" : False,
-        "userType" : ""
+        "userType" : "",
+        "btcRate" : 10,
+        "btcAmount" : 0
     }
-    context["id"] = str(id)
+    id = request.session.get('userId')
+    context["id"] = id
     db = DB()
     #find user type
     selectUserType = "select type from login where id=" + str(id) + ";"
@@ -458,7 +464,6 @@ def sellView(request, id):
     if request.POST.get("sellSubmit"):
         username = str(request.POST.get("userName"))
         sellBitcoins = float(request.POST.get("bitcoins"))
-        balance = request.POST.get("balance")
         commType = request.POST.get("btcfiat")
 
         #query to get id of client
@@ -475,11 +480,11 @@ def sellView(request, id):
         #query to check bitcoins in users wallet
         selectQuery = "select id, btcAmount from wallet where userId= " + str(clientId) + ";"
         errorMsg = "could not fetch number bitcoins from wallet"
-
         row = db.select(selectQuery, errorMsg)
         if row:
             walletId = row[0][0]
             totalBitcoins = row[0][1]
+            context["btcAmount"] = totalBitcoins
         else:
             context["verification"] = False
             return render(request, 'transactionHistory.html', context)
@@ -540,14 +545,15 @@ def sellView(request, id):
     return render(request, 'sell.html', context)
 
 #view for wallet tab
-def walletView(request, id):
+def walletView(request):
     db = DB()
     context = {
         "fiatbalance" : "",
         "btcbalance" : "",
         "type" : ""
     }
-    context["id"] = str(id)
+    id = request.session.get('userId')
+    context["id"] = id
 
     #check the user type
     selectUserType = "select type from login where id=" + str(id) + ";"

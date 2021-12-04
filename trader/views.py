@@ -5,10 +5,7 @@ from login.models import DB
 
 
 
-def transactionHistoryView(request, id):
-    context = {
-        "id" : id
-    }
+def transactionHistoryView(request):
 
     details = {
         "transactionId" : 0,
@@ -22,13 +19,13 @@ def transactionHistoryView(request, id):
         "status" : "",
     }
     context = {
-        "id" : "",
+        "id" : -1,
         "details" : [],
     }
-
+    id = request.session.get('userId')
     db = DB()
 
-    selectQuery = "select tid, clientId, ordertype, totalAmount, btcAmount, commissionType, commission, date, status from transaction where  traderId= " + str(id) + ";"
+    selectQuery = "select tid, clientId, ordertype, totalAmount, btcAmount, commissionType, commissionAmount, date, status from transaction where  traderId= " + str(id) + ";"
     errorMsg = "could not find transactions"
 
     row = db.select(selectQuery, errorMsg)
@@ -38,9 +35,3 @@ def transactionHistoryView(request, id):
     context["id"] = str(id)
 
     return render(request, 'traderTransactionHistory.html', context)
-
-def buySellView(request):
-    context = {
-
-    }
-    return render(request, 'buySell.html', context)

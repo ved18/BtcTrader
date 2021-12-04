@@ -153,21 +153,21 @@
                   </li>
                   
                   <li class="nav-item">
-                    <a class="nav-link" href="/transactionHistory/{{id}}">TransactionHistory</a>
+                    <a class="nav-link" href="/transactionHistory/">TransactionHistory</a>
                   </li>
                   {% else %}
                     <li class="nav-item">
-                      <a class="nav-link" href="/traderTransactionHistory/{{id}}">TransactionHistory</a>
+                      <a class="nav-link" href="/traderTransactionHistory/">TransactionHistory</a>
                     </li>
                   {% endif %}
                   <li class="nav-item">
-                    <a class="nav-link" href="/buy/{{id}}">Buy</a>
+                    <a class="nav-link" href="/buy/">Buy</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="/sell/{{id}}">Sell</a>
+                    <a class="nav-link" href="/sell/">Sell</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="/wallet/{{id}}">Wallet</a>
+                    <a class="nav-link" href="/wallet/">Wallet</a>
                   </li>
                   <li class="nav-item">
                     <a class="nav-link {% if request.path == '/editProfile/' %} active {% endif %}" href="/editProfile/">  EditProfile </a>     
@@ -192,7 +192,7 @@
                     </div>
                     <div class="input-box">
                       <span class="details">Current Bitcon Rate :</span>
-                      <input name="rate" type="text" placeholder="Btc Rate" required>
+                      <input name="rate" type="text" placeholder="Btc Rate" value ={{btcRate}} disabled>
                     </div>
                      <div class="input-box">
                          <span class="details">Number Of Bitcoins to sell :</span>
@@ -200,7 +200,7 @@
                     </div>
                     <div class="input-box">
                         <span class="details">Number of Bitcoins in wallet :</span>
-                        <input name="balance" type="text" placeholder="Wallet balance" required>
+                        <input name="balance" type="text" placeholder="walletBalance" value = {{btcAmount}} disabled>
                     </div>
                 </div>
                     <div>
