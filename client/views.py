@@ -3,6 +3,7 @@ from django.db import connection
 from django.shortcuts import redirect, render
 from django.template import context
 from login.models import DB
+import requests
 # Create your views here.
 
 def homeView(request):
@@ -296,7 +297,7 @@ def buyView(request):
         "click" : False,
         "nameverified" : False,
         "balanceverified" : False,
-        "btcrate" : 10,
+        "btcrate" : -1,
         "commtype" : "",
         "commrate" : "",
         "updatedwallet" : False,
@@ -306,7 +307,10 @@ def buyView(request):
     }
     id = request.session.get('userId')
     context["id"] = id
-    
+    response = requests.get('https://api.coindesk.com/v1/bpi/currentprice.json')
+    btcRateJson = response.json()
+    currentBtcRate = btcRateJson['bpi']['USD']['rate_float']
+    context['btcrate'] = currentBtcRate
     #find user type
     selectUserType = "select type from login where id=" + str(id) + ";"
     errorMsg = "cannot find user type in buyview"
@@ -361,7 +365,7 @@ def buyView(request):
         row = db.select(selectId,errorMsg)
         if row:
             userId = row[0][0]
-
+        
         #find commission rate for the user of trader
         selectUserCommType = "select type from client where id=" + str(userId) + ";"
         errorMsg = "Could not find users commission type"
@@ -388,7 +392,7 @@ def buyView(request):
 
 
         commrate = float(context["commrate"])
-        btcrate = float(context["btcrate"])
+        btcrate = currentBtcRate
         finalbitcoins = 0.0
         if verifyUsername(newusername, userId):
             context["nameverified"] = True
@@ -428,11 +432,15 @@ def sellView(request):
         "verification" : False,
         "btcCap" : False,
         "userType" : "",
-        "btcRate" : 10,
+        "btcRate" : -1,
         "btcAmount" : 0
     }
     id = request.session.get('userId')
     context["id"] = id
+    response = requests.get('https://api.coindesk.com/v1/bpi/currentprice.json')
+    btcRateJson = response.json()
+    currentBtcRate = btcRateJson['bpi']['USD']['rate_float']
+    context['btcRate'] = currentBtcRate
     db = DB()
     #find user type
     selectUserType = "select type from login where id=" + str(id) + ";"
@@ -497,7 +505,6 @@ def sellView(request):
             commissionRate = row[0][0]
         
         #need to update bitcoin rate here from coindesk api
-        currentBtcRate = 10
         totalAmount = sellBitcoins * currentBtcRate
         commissionAmount = totalAmount * (commissionRate/100)
         metaCurrency = totalAmount - commissionAmount
