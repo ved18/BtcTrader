@@ -9,26 +9,27 @@
 
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container-fluid">
-              <a class="navbar-brand" href="/home/{{id}}">BtcTrader</a>
+              <a class="navbar-brand" href="/home/">BtcTrader</a>
               <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                   <li class="nav-item">
-                    <a class="nav-link {% if request.path == '/home/' %} active {% endif %}" aria-current="page" href="/home/{{id}}">Home</a>
+                    <a class="nav-link {% if request.path == '/home/' %} active {% endif %}" aria-current="page" href="/home/">Home</a>
+                  </li>
+
+                  <li class="nav-item">
+                    <a class="nav-link {% if request.path == '/transactionHistory/' %} active {% endif %}" href="/transactionHistory/">TransactionHistory</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link {% if request.path == '/transactionHistory/' %} active {% endif %}" href="/transactionHistory/{{id}}">TransactionHistory</a>
+                    <a class="nav-link" href="/buy/">Buy</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="/buy/{{id}}">Buy</a>
+                    <a class="nav-link" href="/sell/">Sell</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="/sell/{{id}}">Sell</a>
+                    <a class="nav-link" href="/wallet/">Wallet</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="/wallet/{{id}}">Wallet</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link {% if request.path == '/editProfile/' %} active {% endif %}" href="/editProfile/{{id}}">  EditProfile </a>
+                    <a class="nav-link {% if request.path == '/editProfile/' %} active {% endif %}" href="/editProfile/">  EditProfile </a>
                 </li>
                 </ul>
 
@@ -43,7 +44,7 @@
                 <div class="card-body">
                   <h5 class="card-title">Bitcoins</h5>
                   <p class="card-text">Number of bitcoins you have bought:</p>
-                  <input class="form-control" type="text" name="bitcoins" value="{{ btcAmount }}">
+                  <input class="form-control" type="text" name="bitcoins" value="{{ btcAmount }}" disabled>
                 </div>
               </div>
             </div>
@@ -53,7 +54,7 @@
                 <div class="card-body">
                   <h5 class="card-title">Money</h5>
                   <p class="card-text">Amount present in your account:</p>
-                  <input class="form-control" type="text" name="amount" value="{{ accountBalance  }}">
+                  <input class="form-control" type="text" name="amount" value="{{ accountBalance  }}" disabled>
                 </div>
               </div>
             </div>
@@ -63,7 +64,7 @@
                 <div class="card-body">
                   <h5 class="card-title">Net Gain/Loss</h5>
                   <p class="card-text">Profit or loss incurred until now:</p>
-                  <input class="form-control" type="text" name="net" value="{{ ans  }}" >
+                  <input class="form-control" type="text" name="net" value="{{ ans  }}" disabled>
                              
                 </div>
               </div>
@@ -74,7 +75,7 @@
                 <div class="card-body">
                   <h5 class="card-title">Investment</h5>
                   <p class="card-text">Total amount invested:</p>
-                  <input class="form-control" type="text" name="invamount" value="{{ investmentAmount  }}">
+                  <input class="form-control" type="text" name="invamount" value="{{ investmentAmount  }}" disabled>
                 </div>
               </div>
             </div>

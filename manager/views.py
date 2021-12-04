@@ -2,7 +2,6 @@ from django.shortcuts import render, redirect
 from .models import DB
 from django.template import context
 from django.contrib.auth import authenticate, login, logout
-from .models import Transaction
 
 # Create your views here.
 
@@ -53,15 +52,4 @@ def managerhomeView(request):
     return render(request, 'managerhomePage.html',context)
 
 def managertransactionView(request):
-    # db = DB()
-    # selectQuery = "SELECT * from transaction WHERE date >= DATE(NOW()) + INTERVAL -6 DAY AND date <  NOW() + INTERVAL  0 DAY"
-    # errorMsg = "Unable to fetch data."
-    # row = db.select(selectQuery,errorMsg)
-    # print(row)
-    # # if(row):
-    # #     context["totalCommission"]=row[0][0]
-    # # print(context["totalCommission"])
-    st=Transaction.objects.all()
-    print(st) # Collect all records from table 
-    # return render(request,'display.html',{'st':st})
-    return render(request, 'managerTransaction.html',{'st':st})
+    return render(request, 'managerTransaction.html')

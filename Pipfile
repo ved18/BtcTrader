@@ -8,6 +8,7 @@ django = "*"
 pymysql = "*"
 requests = "*"
 mysqlclient = "*"
+django-pymemcache = "*"
 
 [dev-packages]
 
