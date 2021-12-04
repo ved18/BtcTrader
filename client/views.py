@@ -5,7 +5,7 @@ from django.template import context
 from login.models import DB
 # Create your views here.
 
-def homeView(request, id):
+def homeView(request):
     context = {
         "firstName":"",
         "btcAmount":"",
@@ -22,33 +22,39 @@ def homeView(request, id):
     id = request.session.get('userId')
     db = DB()
     context["id"] = id
-    selectUsername="select firstName from client where id=" + str(id) +";"
+    selectUsername = "select firstName from client where id=(%s)"
     errorMsg = "could not select required values"
-    clientRowUsername=db.select(selectUsername,errorMsg)
+    param = (id,)
+    clientRowUsername =db.selectPrepared(selectUsername, param, errorMsg)
     if clientRowUsername:
         context["firstName"]=clientRowUsername[0][0]
 
-    selectInvestment="select investmentAmount  from portfolio where id=" + str(id) +";"
+    selectInvestment = "select investmentAmount from portfolio where id=(%s)"
     errorMsg = "could not select required values"
-    clientRowInv=db.select(selectInvestment,errorMsg)
+    param = (id,)
+    clientRowInv=db.selectPrepared(selectInvestment,param, errorMsg)
     if clientRowInv:
         context["investmentAmount"]=clientRowInv[0][0]
 
-    selectTypeQuery = "select btcAmount, accountBalance from wallet where userId=" + str(id) +";"
+    selectTypeQuery = "select btcAmount, accountBalance from wallet where userId=(%s)"
     errorMsg = "could not select required values"
-    clientRow = db.select(selectTypeQuery, errorMsg)
+    param = (id,)
+    clientRow = db.selectPrepared(selectTypeQuery, param, errorMsg)
     if clientRow:
         context["btcAmount"] = clientRow[0][0]
         context["accountBalance"] = clientRow[0][1]
     
 
-    resQuery="select totalBtc from portfolio where id=" + str(id) +";"
-    clientRow1 = db.select(resQuery, errorMsg)
+    resQuery="select totalBtc from portfolio where id=(id)"
+    param = (id,)
+    errorMsg = "could not fetch total bitcoins homeview"
+    clientRow1 = db.selectPrepared(resQuery, param, errorMsg)
     if clientRow1:
         context["t1"] = clientRow1[0][0]
     
-    selectInvestment="select investmentAmount from portfolio where id=" + str(id) +";"
-    clientRow2 = db.select(selectInvestment, errorMsg)
+    selectInvestment="select investmentAmount from portfolio where id=(%s)"
+    param = (id)
+    clientRow2 = db.selectPrepared(selectInvestment, param, errorMsg)
     if clientRow2:
         context["t2"] = clientRow2[0][0]
     
@@ -64,23 +70,36 @@ def homeView(request, id):
 
 
 # update password for the user
-def updateProfile(newPassword, id):
-    updateQuery = "update login set password='" + newPassword + "' where id=" + str(id) + ";"
-    errorMsg = "could not update password"
-
+def updateProfile(userType, firstName, lastName, phoneNumber, newPassword, id):
+    
     db = DB()
-    row = db.insertOrUpdateOrDelete(updateQuery, errorMsg)
-    if row:
+    if userType == 'client':
+        updateQuery = "update client set firstName=(%s), lastName=(%s), phoneNumber=(%s) where id=(%s)"
+    else:
+        updateQuery = "update trader set firstName=(%s), lastName=(%s), phoneNumber=(%s) where id=(%s)"
+        
+    params = (firstName, lastName, phoneNumber, id)
+    errorMsg = "could not edit profile details"
+
+    row1 = db.insertPrepared(updateQuery, params, errorMsg)
+
+    updateQuery = "update login set password=(%s) where id=(%s)"
+    errorMsg = "could not update password"
+    params = (newPassword, id)
+
+    row2 = db.insertPrepared(updateQuery, params, errorMsg)
+    if row1 and row2:
         return True
     return False
 
 #function to verify old password for editing
 def verifyPassword(oldPassword, id):
-    selectPassword = "select password from login where id=" + str(id) +";"
+    selectPassword = "select password from login where id=(%s)"
     errorMsg = "could not find old password"
+    param = (id,)
 
     db = DB()
-    row = db.select(selectPassword, errorMsg)
+    row = db.selectPrepared(selectPassword, param, errorMsg)
 
     if row[0][0] == oldPassword:
         return True
@@ -170,7 +189,7 @@ def addtransaction(context,id,commtype,enteredfiat,commamount,buttontype,finalbi
             return True
         return False
 
-def editProfileView(request, id):
+def editProfileView(request):
     db = DB()
     context = {
         "firstName" : "",
@@ -183,32 +202,34 @@ def editProfileView(request, id):
         "type" : "client",
     }
 
-    context["id"] = str(id)
-
-    selectTypeQuery = "select type from login where id=" + str(id) +";"
-    errorMsg = "could not select type"
-
-    row = db.select(selectTypeQuery, errorMsg)
-    
-    if row:
-        context["type"] = row[0][0]
+    id = request.session.get('userId')
+    userType = request.session.get('userType')
+    context['id'] = id
+    context["type"] = userType
 
     if request.POST.get("epSubmit"):
         context["click"] = True
         newPassword = str(request.POST.get("newPassword"))
         confirmPassword = str(request.POST.get("confirmPassword"))
         oldPassword = str(request.POST.get("oldPassword"))
+        firstName = str(request.POST.get("firstName"))
+        lastName = str(request.POST.get("lastName"))
+        phoneNumber = str(request.POST.get("phoneNumber"))
         if verifyPassword(oldPassword, id):
             if(newPassword == confirmPassword):
-                if updateProfile(newPassword, id):
+                if updateProfile(userType, firstName, lastName, phoneNumber, newPassword, id):
                     context["changed"] = True
                     if context["type"] == "trader":
                         return render(request, 'traderTransactionHistory.html', context)
 
 
-    selectQuery = "select firstName, lastName, phoneNumber from " + context["type"] + " where id =" + str(id) + ";"
+    if userType == 'client':
+        selectQuery = "select firstName, lastName, phoneNumber from client where id = (%s)"
+    else:
+        "select firstName, lastName, phoneNumber from trader where id = (%s)"
     errorMsg = "Could not find the particular user in edit profile"
-    clientRow = db.select(selectQuery, errorMsg)
+    params = (id,)
+    clientRow = db.selectPrepared(selectQuery, params, errorMsg)
 
     if clientRow:
         context["firstName"] = clientRow[0][0]
@@ -216,8 +237,9 @@ def editProfileView(request, id):
         context["phoneNumber"] = clientRow[0][2]
 
     
-    selectEmail = "select username from users where id=" + str(id) + ";"
-    emailRow = db.select(selectEmail, errorMsg)
+    selectEmail = "select username from users where id = (%s)"
+    param = (id,)
+    emailRow = db.selectPrepared(selectEmail, param, errorMsg)
     
     if emailRow:
         context["email"] = emailRow[0][0]

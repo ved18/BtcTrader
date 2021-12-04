@@ -10,7 +10,7 @@
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container-fluid">
               {% if type == "client" %}
-              <a class="navbar-brand" href="/home/{{id}}">BtcTrader</a>
+              <a class="navbar-brand" href="/home/">BtcTrader</a>
               {% else %}
                 <a class="navbar-brand" href="/traderTransactionHistory/{{id}}">BtcTrader</a>
               {% endif %}
@@ -18,7 +18,7 @@
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                   {% if type == "client" %}
                   <li class="nav-item">
-                    <a class="nav-link {% if request.path == '/home/' %} active {% endif %}" aria-current="page" href="/home/{{id}}">Home</a>
+                    <a class="nav-link {% if request.path == '/home/' %} active {% endif %}" aria-current="page" href="/home/">Home</a>
                   </li>
                   <li class="nav-item">
                     <a class="nav-link" href="/transactionHistory/{{id}}">TransactionHistory</a>
@@ -38,7 +38,7 @@
                     <a class="nav-link" href="/wallet/{{id}}">Wallet</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link {% if request.path == '/editProfile/' %} active {% endif %}" href="/editProfile/{{id}}">EditProfile</a>
+                    <a class="nav-link {% if request.path == '/editProfile/' %} active {% endif %}" href="/editProfile/">EditProfile</a>
                   </li>
                 </ul>
 
@@ -71,13 +71,13 @@
                           <div class="col">
                             <div class="form-group">
                               <label>First Name</label>
-                              <input class="form-control" type="text" name="name"  value= "{{ firstName }}">
+                              <input class="form-control" type="text" name="firstName"  value= "{{ firstName }}">
                             </div>
                           </div>
                           <div class="col">
                             <div class="form-group">
                               <label>Last Name</label>
-                              <input class="form-control" type="text" name="username" value="{{ lastName }}">
+                              <input class="form-control" type="text" name="lastName" value="{{ lastName }}">
                             </div>
                           </div>
                         </div>

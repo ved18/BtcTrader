@@ -40,7 +40,6 @@ def loginView(request):
             if row:
                 if row[0][0] == password:
                     context["success"] = True
-                    selectTypeQuery = "select type from login where id=" + str(id) +";"
                     selectTypeQuery = "select type from login where id=(%s)"
                     param = (id,)
                     errorMsg = "could not select type"
@@ -55,9 +54,8 @@ def loginView(request):
                         request.session["loggedIn"] = True
 
                     if context["type"] == 'client':
-                        return render(request, 'homePage.html', context)
-                        #return redirect('home/')
+                        return redirect('home/')
                     else:
-                        return render(request, 'traderTransactionHistory.html', context)
+                        return redirect('traderTransaction')
 
     return render(request, 'login.html', context)
