@@ -1,5 +1,6 @@
+from django.contrib.auth import login
 from django.db import connection
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.template import context
 from login.models import DB
 # Create your views here.
@@ -15,8 +16,12 @@ def homeView(request, id):
         "t2":0,
         "ans":"",
     }
+
+    # if(request.session.get('loggedIn') == False):
+    #     return redirect('login')
+    id = request.session.get('userId')
     db = DB()
-    context["id"] = str(id)
+    context["id"] = id
     selectUsername="select firstName from client where id=" + str(id) +";"
     errorMsg = "could not select required values"
     clientRowUsername=db.select(selectUsername,errorMsg)

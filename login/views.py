@@ -12,7 +12,7 @@ def loginView(request):
         "id" : "",
         "type" : "",
     }
-    logout(request)
+    request.session['loggedIn'] = False
 
     db = DB()
     if request.POST.get("Login"):
@@ -49,10 +49,14 @@ def loginView(request):
 
                     if row:
                         context["type"] = row[0][0]
+                        #add session variables here
+                        request.session['userType'] = context["type"]
+                        request.session["userId"] = context["id"]
+                        request.session["loggedIn"] = True
 
                     if context["type"] == 'client':
                         return render(request, 'homePage.html', context)
-                        #return redirect('home/123')
+                        #return redirect('home/')
                     else:
                         return render(request, 'traderTransactionHistory.html', context)
 
