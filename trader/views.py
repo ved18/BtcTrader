@@ -10,6 +10,7 @@ transaction = apps.get_model('transactions', 'Transaction')
 
 def transactionHistoryView(request,id):
     context = {
+<<<<<<< HEAD
         "id" : ""
     }
     context["id"] = str(id)
