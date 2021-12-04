@@ -32,6 +32,15 @@
                   <li class="nav-item">
                     <a class="nav-link" href="/traderTransactionHistory/{{id}}">TransactionHistory</a>
                   </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="/buy/{{id}}">Buy</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="/sell/{{id}}">Sell</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="/wallet/{{id}}">Wallet</a>
+                  </li>
 
                   <li class="nav-item">
                     
@@ -39,16 +48,17 @@
                  
                 </li>
                 </ul>
+                
 
               </div>
             </div>
           </nav>
         <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script> -->
         <p>Welcome to transaction history page</p>
+         
         <table>
           <tr>
             <th>TransactionId</th>
-            <th>ClientId</th>
             <th>Transaction type</th>
             <th>Bitcoins bought/sold</th>
             <th>Amount spent/gained</th>
@@ -57,17 +67,16 @@
             <th>Date</th>
             <th>Status</th>
           </tr>
-          {% for index, tuple in details.enumerate %}
+          {% for tuple in details %}
           <tr>
-            <td>{{ tuple }}</td>
-            <td>{{ tuple }}</td>
-            <td>{{ tuple }}</td>
-            <td>{{ tuple }}</td>
-            <td>{{ tuple }}</td>
-            <td>{{ tuple }}</td>
-            <td>{{ tuple }}</td>
-            <td>{{ tuple }}</td>
-            <td>{{ tuple }}</td>
+            <td>{{  tuple.transactionId}}</td>
+            <td>{{ tuple.commissionType }}</td>
+            <td>{{ tuple.amount }}</td>
+            <td>{{ tuple.comissionAmount }}</td>
+            <td>{{ tuple.orderType }}</td>
+            <td>{{ tuple.date }}</td>
+            <td>{{ tuple.bitcoin }}</td>
+            <td>{{ tuple.rate }}</td>
           </tr>
           {% endfor %}
         </table>

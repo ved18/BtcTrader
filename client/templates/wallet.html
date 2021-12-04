@@ -193,8 +193,15 @@
                 <div class="input-box">
                  <span class="details">Available Fiat in Wallet :</span>
                  <input name="wallamt" type="text" value="${{ fiatbalance }}" readonly>
-                </div>  
+                </div>
+                <div class="input-box">
+                  <span class="details">Enter amount to add :</span>
+                  <input name="addamt" type="text" pattern="[0-9]{1,}.[0-9]{2}" placeholder="$0.00" required>
+                 </div>   
             </div>
+            <div class="button">
+              <input type="submit" name="addamount" value="Add" >
+          </div>  
             <div>
 
             </div>

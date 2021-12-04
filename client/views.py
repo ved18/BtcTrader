@@ -255,36 +255,6 @@ def transactionHistoryView(request, id):
     context["id"] = str(id)
     return render(request, 'transactionHistory.html', context)
 
-#view for transaction history
-def transactionHistoryByTraderView(request, id):
-    
-    details = {
-        "transactionId" : 0,
-        "traderId":0,
-        "transactiontype":"",
-        "totalamount":0,
-        "bitcoin" : 0,
-        "commissionType" : "",
-        "comissionAmount" : "",
-        "date" : "",
-        "status" : "",
-    }
-    context = {
-        "id" : "",
-        "details" : [],
-    }
-
-    db = DB()
-
-    selectQuery = "select tid, traderId, ordertype, totalAmount, btcAmount, commissionType, commission, date, status from transaction where  clientId= "+ str(id) +" && trandeId is Not Null" ";"
-    errorMsg = "could not find transactions"
-
-    row = db.select(selectQuery, errorMsg)
-    if row:
-        context["details"] = row
-
-    context["id"] = str(id)
-    return render(request, 'transactionHistory.html', context)
 
 #view for buy tab
 def buyView(request, id):
@@ -400,6 +370,12 @@ def buyView(request, id):
                 userId = updatewallet(finalbitcoins,enteredfiat,newusername, id)
                 if userId:
                     context["updatedwallet"] = True
+                    selectAccountBalance = "select accountBalance from wallet where userId=" + str(id) + ";"
+                    errorMsg = "Could not find accountBalance"
+
+                    accountBlance = db.select(selectAccountBalance, errorMsg)
+                    if accountBlance:
+                        context["accountbalance"] = accountBlance[0][0]
                     if addtransaction(context,id,commtype,enteredfiat,commamount,buttontype,finalbitcoins,btcrate, userId):
                         context["transactionadded"] = True
 
@@ -518,9 +494,11 @@ def walletView(request, id):
     context = {
         "fiatbalance" : "",
         "btcbalance" : "",
-        "type" : ""
+        "type" : "",
+        "addedMoney" : False,
     }
     context["id"] = str(id)
+    balance = request.POST.get("addamt")
 
     #check the user type
     selectUserType = "select type from login where id=" + str(id) + ";"
@@ -538,4 +516,19 @@ def walletView(request, id):
         context["btcbalance"] = accountBlance[0][0]
         context["fiatbalance"] = accountBlance[0][1]
 
+    if request.POST.get("addamount"):
+        updateQuery = "update wallet set accountBalance=accountBalance+"+ str(balance) +" where userId="+ str(id) +";"
+        errorMsg = "could not update balance"
+        db = DB()
+        row = db.insertOrUpdateOrDelete(updateQuery, errorMsg)
+        if row:
+            context["addedMoney"] = True
+
+        selectAccountBalance = "select btcAmount, accountBalance from wallet where userId=" + str(id) + ";"
+        errorMsg = "Could not find accountBalance"
+
+        accountBlance = db.select(selectAccountBalance, errorMsg)
+        if accountBlance:
+            context["btcbalance"] = accountBlance[0][0]
+            context["fiatbalance"] = accountBlance[0][1]
     return render(request, 'wallet.html', context)
