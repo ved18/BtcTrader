@@ -1,4 +1,5 @@
 from decimal import Context
+from django.http import request
 from django.shortcuts import render
 from login.models import DB
 from .models import Client
@@ -8,27 +9,23 @@ transaction = apps.get_model('transactions', 'Transaction')
 
 
 
-def transactionHistoryView(request,id):
+
+def transactionHistoryView(request):
     context = {
-<<<<<<< HEAD
+
         "id" : ""
     }
     context["id"] = str(id)
     return render(request, 'traderTransactionHistory.html',context)
 
-def viewClients(request,id):
+
+def viewClients(request):
     context = {
-        "id" : ""
-        "st"
+        "st" : ''
     }
-    context["id"] = str(id)
+    id = request.session.get('userId')
     # st = transaction.objects.values('clientid').filter(traderid=id, slug=clientid)
     test_ids = list(transaction.objects.values('clientid').filter(traderid=id).values_list('clientid', flat=True))
     context["st"]=Client.objects.filter(id__in=test_ids)
     return render(request, 'viewClients.html',context)
 
-def buySellView(request):
-    context = {
-
-    }
-    return render(request, 'buySell.html', context)
