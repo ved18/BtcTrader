@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'signup.apps.SignupConfig',
     'client.apps.ClientConfig',
     'trader.apps.TraderConfig',
-    'manager.apps.ManagerConfig'
+    'manager.apps.ManagerConfig',
+    'transactions.apps.TransactionsConfig'
 ]
 
 MIDDLEWARE = [
@@ -123,6 +124,7 @@ USE_I18N = True
 USE_L10N = False
 
 USE_TZ = False
+X_FRAME_OPTIONS = 'SAMEORIGIN'
 
 
 # Static files (CSS, JavaScript, Images)

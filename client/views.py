@@ -222,69 +222,12 @@ def editProfileView(request, id):
 
 
 #view for transaction history
-def transactionHistoryView(request, id):
-    
-
+def transactionHistoryView(request,id):
     context = {
-        "id" : "",
-        "details" : [],
+        "id" : ""
     }
-
-    
-    db = DB()
-
-    selectQuery = "select tid, ordertype, totalAmount, btcAmount, commissionType, commissionAmount, date, status from transaction where  clientId= "+ str(id) +" && traderId is NULL" ";"
-    errorMsg = "could not find transactions"
-
-    row = db.select(selectQuery, errorMsg)
-    transactionInfo = []
-    if row:
-        for i in row:
-            temp = {}
-            temp["transactionId"] = i[0]
-            temp["commissionType"] = i[1]
-            temp["amount"] = i[2]
-            temp["comissionAmount"]= i[3]
-            temp["orderType"] = i[4]
-            temp["date"] = i[5]
-            temp["bitcoin"] = i[6]
-            temp["rate"] = i[7]
-
-            transactionInfo.append(temp)
-    context["details"] = transactionInfo
     context["id"] = str(id)
-    return render(request, 'transactionHistory.html', context)
-
-#view for transaction history
-def transactionHistoryByTraderView(request, id):
-    
-    details = {
-        "transactionId" : 0,
-        "traderId":0,
-        "transactiontype":"",
-        "totalamount":0,
-        "bitcoin" : 0,
-        "commissionType" : "",
-        "comissionAmount" : "",
-        "date" : "",
-        "status" : "",
-    }
-    context = {
-        "id" : "",
-        "details" : [],
-    }
-
-    db = DB()
-
-    selectQuery = "select tid, traderId, ordertype, totalAmount, btcAmount, commissionType, commission, date, status from transaction where  clientId= "+ str(id) +" && trandeId is Not Null" ";"
-    errorMsg = "could not find transactions"
-
-    row = db.select(selectQuery, errorMsg)
-    if row:
-        context["details"] = row
-
-    context["id"] = str(id)
-    return render(request, 'transactionHistory.html', context)
+    return render(request, 'transactionHistory.html',context)  
 
 #view for buy tab
 def buyView(request, id):

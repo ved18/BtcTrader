@@ -151,50 +151,43 @@
    right:10px;
    top:5px;
 }
+
+.iframe-container {
+  overflow: hidden;
+  /* 16:9 aspect ratio */
+  padding-top: 56.25%;
+  position: relative;
+}
+
+.iframe-container iframe {
+   border: 0;
+   height: 100%;
+   left: 0;
+   position: absolute;
+   top: 0;
+   width: 100%;
+}
     </style>
-    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
-    <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
-    <script src="https://cdn.datatables.net/datetime/1.1.1/js/dataTables.dateTime.min.js"></script>
-    <script type="text/javascript">
-        var minDate, maxDate;
- 
-// Custom filtering function which will search data in column four between two values
-$.fn.dataTable.ext.search.push(
-    function( settings, data, dataIndex ) {
-        var min = minDate.val();
-        var max = maxDate.val();
-        var date = new Date( data[4] );
- 
-        if (
-            ( min === null && max === null ) ||
-            ( min === null && date <= max ) ||
-            ( min <= date   && max === null ) ||
-            ( min <= date   && date <= max )
-        ) {
-            return true;
+    <script>
+        // Selecting the iframe element
+        var frame = document.getElementById("Iframe");
+          
+        // Adjusting the iframe height onload event
+        frame.onload = function()
+        // function execute while load the iframe
+        {
+          // set the height of the iframe as 
+          // the height of the iframe content
+          frame.style.height = 
+          frame.contentWindow.document.body.scrollHeight + 'px';
+           
+  
+         // set the width of the iframe as the 
+         // width of the iframe content
+         frame.style.width  = 
+          frame.contentWindow.document.body.scrollWidth+'px';
+              
         }
-        return false;
-    }
-);
- 
-$(document).ready(function() {
-    // Create date inputs
-    minDate = new DateTime($('#min'), {
-        format: 'MMMM Do YYYY'
-    });
-    maxDate = new DateTime($('#max'), {
-        format: 'MMMM Do YYYY'
-    });
- 
-    // DataTables initialisation
-    var table = $('#example').DataTable();
- 
-    // Refilter the table
-    $('#min, #max').on('change', function () {
-        table.draw();
-    });
-});
     </script>
     <body>
 
@@ -231,53 +224,11 @@ $(document).ready(function() {
             <div class="col-lg-8 grid-margin stretch-card">
                 <div class="card">
                     <div class="card-body">
-                        <h4 class="card-title">Transactions</h4>
-
-
-<table border="0" cellspacing="5" cellpadding="5">
-        <tbody><tr>
-            <td>Start date:</td>
-            <td><input type="text" id="min" name="min"></td>
-            <td>End date:</td>
-            <td><input type="text" id="max" name="max"></td>
-        </tr>
-    </tbody></table>
-    <table id="example" class="display nowrap" style="width:100%">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>ClientId</th>
-                <th>TraderId</th>
-                <th>Status</th>
-                <th>Date</th>
-                <th>Commission Amt</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for sts in st %}
-
-<tr>
-    <td>{{sts.tid}}</td>
-    <td>{{sts.clientid}}</td>
-    <td>{{sts.traderid}}</td>
-    <td>{{sts.status}}</td>
-    <td>{{sts.date}}</td>
-    <td>{{sts.commissionamount}}</td>
-</tr>
-
-{% endfor %}
-        </tbody>
-        <tfoot>
-            <tr>
-                <th>ID</th>
-                <th>ClientId</th>
-                <th>TraderId</th>
-                <th>Status</th>
-                <th>Date</th>
-                <th>Commission Amt</th>
-            </tr>
-        </tfoot>
-    </table>
+                        <h4 class="card-title">Transactions</h4><!-- 
+  <iframe src="http://127.0.0.1:8000/transactions/" onload='javascript:(function(o){o.style.height=o.contentDocument.body.scrollHeight+"px";}(this));' style="height:100%;width:100%;border:none;overflow:hidden;"></iframe> -->
+ <div class="iframe-container">
+  <iframe style="width: 100%" src="/transactions/" id="Iframe"></iframe>
+</div>
                     </div>
                 </div>
             </div>

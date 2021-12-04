@@ -21,6 +21,7 @@ from signup import views as signupViews
 from client import views as clientViews
 from trader import views as traderViews
 from manager import views as managerViews
+from transactions import views as transactionsViews
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -46,4 +47,7 @@ urlpatterns = [
     path('managerlogin/', managerViews.managerloginView, name='manager'),
     path('managerhome/', managerViews.managerhomeView, name='manager'),
     path('managerTransactions/', managerViews.managertransactionView, name='manager'),
+
+    #transactions
+    path('transactions/', transactionsViews.viewtransaction, name='transactions'),
 ]
