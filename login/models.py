@@ -60,6 +60,24 @@ class DB:
 
         return True
 
+    def insertPrepared(self, query, param, errorMsg):
+        try:
+            self.cursor.execute(query, param)
+        except:
+            print(errorMsg)
+            return False
+
+        return True
+
+    def selectPrepared(self, query, param, errorMsg):
+        try:
+            self.cursor.execute(query, param)
+        except:
+            print(errorMsg)
+            return False
+        row = self.cursor.fetchall()
+        return row
+
     def select(self, query, errorMsg):
         try:
             self.cursor.execute(query)
