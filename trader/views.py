@@ -11,12 +11,14 @@ transaction = apps.get_model('transactions', 'Transaction')
 
 
 def transactionHistoryView(request):
-    context = {
+    st=transaction.objects.filter(traderid=request.session.get("userId"))
+    return render(request, 'traderTransactionHistory.html',{"st":st})
 
-        "id" : ""
-    }
-    context["id"] = str(id)
-    return render(request, 'traderTransactionHistory.html',context)
+def viewTransaction(request,tid):
+    id=int(tid)
+    print(request.session.get("tid"))
+    st=transaction.objects.filter(traderid=request.session.get("userId"),tid=id)
+    return render(request,"singleTransaction.html",{"st":st})
 
 
 def viewClients(request):
