@@ -157,33 +157,8 @@ form .user-details .input-box{
 </style>
 <body>
   <div class="container">
-    <div class="title">Login</div>
-    <div class="content">
-      <form method="post">
-          {% csrf_token %}
-        <div class="user-details">
-          <div class="input-box">
-            <span class="details">Email</span>
-            <input name="username" type="email" placeholder="Enter your email" required>
-          </div>
-          <div class="input-box">
-            <span class="details">Password</span>
-            <input name="password" type="password" placeholder="Enter your password" required>
-          </div>
-        </div>
-        <div class="button">
-          <input name="Login" type="submit" value="Login">
-        </div>
-      </form>
-      {% if loginSubmit == True and success == False %}
-      <div style="width: fit-content; color: red;" role="alert">
-          Invalid Email or Password
-      </div>
-      {% endif %}
-      <div style="width: fit-content;">
-         <p>New User?</p><a href="/signup">Sign Up</a>
-         <a href="/managerlogin">Manager login</a>
-      </div>
+    <div>
+      <p>You have been logged out.</p><a href="/">Log back in</a>
     </div>
   </div>
 

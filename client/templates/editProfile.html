@@ -24,6 +24,9 @@
                     <a class="nav-link" href="/transactionHistory/">TransactionHistory</a>
                   </li>
                   {% else %}
+                  <li> 
+                    <a class="nav-link {% if request.path == '/clients/' %} active {% endif %}" href="/viewClients/">Clients</a>
+                  </li>
                     <li class="nav-item">
                       <a class="nav-link" href="/traderTransactionHistory/">TransactionHistory</a>
                     </li>
@@ -40,6 +43,9 @@
                   <li class="nav-item">
                     <a class="nav-link {% if request.path == '/editProfile/' %} active {% endif %}" href="/editProfile/">EditProfile</a>
                   </li>
+                  <li class="nav-item">
+                    <a class="nav-link {% if request.path == '/logout/' %} active {% endif %}" href="/logout/"> Logout</a>     
+                </li>
                 </ul>
 
               </div>

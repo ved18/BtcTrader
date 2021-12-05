@@ -146,12 +146,6 @@
      padding: .375rem .5625rem;
      font-weight: normal
  }
- .logoutbutton{
-   position:fixed;
-   right:10px;
-   top:5px;
-}
-
 .iframe-container {
   overflow: hidden;
   /* 16:9 aspect ratio */
@@ -203,16 +197,11 @@
                   </li>
                   <li class="nav-item">
                     <a class="nav-link" href="/managerTransactions">TransactionHistory</a>
-                  
-                </ul>
-                
-                  <div class = "logoutbutton">
-                    <ul>
-                  <li>
-                    <a class="nav-link" href="/managerlogin">Logout</a>
                   </li>
-                  </div>
-                  </ul>
+                  <li class="nav-item">
+                    <a class="nav-link {% if request.path == '/logout/' %} active {% endif %}" aria-current="page" href="/logout">Logout</a>
+                  </li>
+                </ul>
               </div>
             </div>
           </nav>

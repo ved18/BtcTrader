@@ -59,3 +59,10 @@ def loginView(request):
                         return redirect('traderTransaction')
 
     return render(request, 'login.html', context)
+
+def logout(request):
+    try:
+        del request.session['userId']
+        return render(request,'logout.html')
+    except:
+        print("There was an error logging you out")
