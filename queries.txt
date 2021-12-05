@@ -9,11 +9,27 @@ create table transaction(tid int NOT NULL, clientId int NOT NULL, traderId int N
 create table portfolio(id int NOT NULL, investmentAmount float NOT NULL, totalBtc float NOT NULL, PRIMARY KEY(id), FOREIGN KEY(id) references users(id));
 create table metaData(totalBtc float NOT NULL, totalCurrency float NOT NULL, commissionGold float NOT NULL DEFAULT(2.5), commissionSilver float NOT NULL DEFAULT(5));
 create table manager(username varchar(255) NOT NULL, password varchar(255) NOT NULL, PRIMARY KEY(username));
+
 Alter table users ADD UNIQUE(username);
+
 alter table transaction modify column tid int AUTO_INCREMENT Not Null;
 SET FOREIGN_KEY_CHECKS=0;
+
 alter table wallet modify column id int AUTO_INCREMENT Not Null;
 SET FOREIGN_KEY_CHECKS=1;
+
 alter table transaction modify traderId int;
 alter table transaction modify column date timestamp;
+<<<<<<< HEAD
 create table cancelLogs(id int NOT NULL, date timestamp, remarks varchar(255) NOT NULL, PRIMARY KEY(id), foreign key(id) references transaction(tid));
+=======
+
+alter table wallet drop constraint wallet_ibfk_1;
+alter table wallet drop column userId
+
+Correct Queries:
+
+create table users(id int AUTO_INCREMENT NOT NULL, unique(username) varchar(255) NOT NULL, PRIMARY KEY(id));
+create table transaction(tid int AUTO_INCREMENT Not Null, clientId int NOT NULL, traderId int, commissionType varchar(255) NOT NULL, totalAmount float NOT NULL, commissionAmount float NOT NULL, orderType varchar(255) NOT NULL, status varchar(255) NOT NULL, date timestamp NOT NULL, btcAmount float NOT NULL, btcRate float NOT NULL, walletId int NOT NULL, PRIMARY KEY(tid), FOREIGN KEY(clientId) references users(id), FOREIGN KEY(traderId) references users(id), FOREIGN KEY(walletId) references wallet(id));
+create table wallet(id int AUTO_INCREMENT Not Null, btcAmount float NOT NULL DEFAULT 0, accountBalance float NOT NULL DEFAULT 0, PRIMARY KEY(id), FOREIGN KEY(userId) references users(id));
+>>>>>>> master
