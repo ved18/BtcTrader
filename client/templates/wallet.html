@@ -144,7 +144,11 @@
 
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container-fluid">
+              {% if userType == "client" %}
               <a class="navbar-brand" href="/home/">BtcTrader</a>
+              {% else %}
+              <a class="navbar-brand" href="/traderTransactionHistory/">BtcTrader</a>
+              {% endif %}
               <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                   {% if type == "client" %}
@@ -156,6 +160,9 @@
                     <a class="nav-link" href="/transactionHistory/">TransactionHistory</a>
                   </li>
                   {% else %}
+                  <li> 
+                    <a class="nav-link {% if request.path == '/clients/' %} active {% endif %}" href="/viewClients/">Clients</a>
+                  </li>
                     <li class="nav-item">
                       <a class="nav-link" href="/traderTransactionHistory/">TransactionHistory</a>
                     </li>
@@ -171,6 +178,9 @@
                   </li>
                   <li class="nav-item">
                     <a class="nav-link {% if request.path == '/editProfile/' %} active {% endif %}" href="/editProfile/">  EditProfile </a>     
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.path == '/logout/' %} active {% endif %}" href="/logout/"> Logout</a>     
                 </li>
                 </ul>
 

@@ -8,67 +8,70 @@ import requests
 # Create your views here.
 
 def homeView(request):
-    context = {
-        "firstName":"",
-        "btcAmount":"",
-        "accountBalance":"",
-        "investmentAmount":"",
-        "netgainloss":"",
-        "t1":0,
-        "t2":0,
-        "ans":"",
-    }
+    if(request.session.has_key('userId')):
+        context = {
+            "firstName":"",
+            "btcAmount":"",
+            "accountBalance":"",
+            "investmentAmount":"",
+            "netgainloss":"",
+            "t1":0,
+            "t2":0,
+            "ans":"",}
 
     # if(request.session.get('loggedIn') == False):
     #     return redirect('login')
-    id = request.session.get('userId')
-    db = DB()
-    context["id"] = id
-    selectUsername = "select firstName from client where id=(%s)"
-    errorMsg = "could not select required values"
-    param = (id,)
-    clientRowUsername =db.selectPrepared(selectUsername, param, errorMsg)
-    if clientRowUsername:
-        context["firstName"]=clientRowUsername[0][0]
+        id = request.session.get('userId')
+        db = DB()
+        context["id"] = id
+        selectUsername = "select firstName from client where id=(%s)"
+        errorMsg = "could not select required values"
+        param = (id,)
+        clientRowUsername =db.selectPrepared(selectUsername, param, errorMsg)
+        if clientRowUsername:
+            context["firstName"]=clientRowUsername[0][0]
 
-    selectInvestment = "select investmentAmount from portfolio where id=(%s)"
-    errorMsg = "could not select required values"
-    param = (id,)
-    clientRowInv=db.selectPrepared(selectInvestment,param, errorMsg)
-    if clientRowInv:
-        context["investmentAmount"]=clientRowInv[0][0]
+        selectInvestment = "select investmentAmount from portfolio where id=(%s)"
+        errorMsg = "could not select required values"
+        param = (id,)
+        clientRowInv=db.selectPrepared(selectInvestment,param, errorMsg)
+        if clientRowInv:
+            context["investmentAmount"]=clientRowInv[0][0]
 
-    selectTypeQuery = "select btcAmount, accountBalance from wallet where userId=(%s)"
-    errorMsg = "could not select required values"
-    param = (id,)
-    clientRow = db.selectPrepared(selectTypeQuery, param, errorMsg)
-    if clientRow:
-        context["btcAmount"] = clientRow[0][0]
-        context["accountBalance"] = clientRow[0][1]
+        selectTypeQuery = "select btcAmount, accountBalance from wallet where userId=(%s)"
+        errorMsg = "could not select required values"
+        param = (id,)
+        clientRow = db.selectPrepared(selectTypeQuery, param, errorMsg)
+        if clientRow:
+            context["btcAmount"] = clientRow[0][0]
+            context["accountBalance"] = clientRow[0][1]
     
 
-    resQuery="select totalBtc from portfolio where id=(%s)"
-    param = (id,)
-    errorMsg = "could not fetch total bitcoins homeview"
-    clientRow1 = db.selectPrepared(resQuery, param, errorMsg)
-    if clientRow1:
-        context["t1"] = clientRow1[0][0]
+        resQuery="select totalBtc from portfolio where id=(%s)"
+        param = (id,)
+        errorMsg = "could not fetch total bitcoins homeview"
+        clientRow1 = db.selectPrepared(resQuery, param, errorMsg)
+        if clientRow1:
+            context["t1"] = clientRow1[0][0]
     
-    selectInvestment="select investmentAmount from portfolio where id=(%s)"
-    param = (id,)
-    clientRow2 = db.selectPrepared(selectInvestment, param, errorMsg)
-    if clientRow2:
-        context["t2"] = clientRow2[0][0]
+        selectInvestment="select investmentAmount from portfolio where id=(%s)"
+        param = (id,)
+        clientRow2 = db.selectPrepared(selectInvestment, param, errorMsg)
+        if clientRow2:
+            context["t2"] = clientRow2[0][0]
     
-    currentRate=10
-    #assuming the currentRate value for the bitcoin as 10.
-    ans=currentRate*(context["t1"])-(context["t2"])
-    if(ans>0):
-        context["ans"]="Profit "+str(ans)
+        currentRate=10
+        #assuming the currentRate value for the bitcoin as 10.
+        ans=currentRate*(context["t1"])-(context["t2"])
+        if(ans>0):
+            context["ans"]="Profit "+str(ans)
+        else:
+            context["ans"]="Loss "+str(ans)
+
+        return render(request, 'homePage.html', context)
     else:
-        context["ans"]="Loss "+str(ans)
+        return redirect("/")
 
-    return render(request, 'homePage.html', context)
 
 
 # update password for the user
@@ -142,7 +145,7 @@ def updatewallet(finalbitcoins,enteredfiat,newusername, updateWalletUserId):
     row = db.selectPrepared(selectId,params,errorMsg)
     userId = row[0][0]
 
-    if userId != updateWalletUserId:
+    if str(userId) != updateWalletUserId:
         updateClientBtc = "update wallet set btcAmount=btcAmount+(%s) where userId=(%s)"
         updateQuery = "update wallet set accountBalance=accountBalance-(%s) where userId=(%s)"
         errorMsg = "cannot update clients wallet for trader transaction"
@@ -195,68 +198,75 @@ def addtransaction(context,id,commtype,enteredfiat,commamount,buttontype,finalbi
         return False
 
 def editProfileView(request):
-    db = DB()
-    context = {
-        "firstName" : "",
-        "lastName" : "",
-        "phoneNumber" : "",
-        "email" : "",
-        "id" : -1,
-        "click" : False,
-        "changed" : False,
-        "type" : "client",
-    }
+    if(request.session.has_key('userId')):
+        db = DB()
+        context = {
+            "firstName" : "",
+            "lastName" : "",
+            "phoneNumber" : "",
+            "email" : "",
+            "id" : -1,
+            "click" : False,
+            "changed" : False,
+            "type" : "client",
+        }
 
-    id = request.session.get('userId')
-    userType = request.session.get('userType')
-    context['id'] = id
-    context["type"] = userType
+        id = request.session.get('userId')
+        userType = request.session.get('userType')
+        context['id'] = id
+        context["type"] = userType
 
-    if request.POST.get("epSubmit"):
-        context["click"] = True
-        newPassword = str(request.POST.get("newPassword"))
-        confirmPassword = str(request.POST.get("confirmPassword"))
-        oldPassword = str(request.POST.get("oldPassword"))
-        firstName = str(request.POST.get("firstName"))
-        lastName = str(request.POST.get("lastName"))
-        phoneNumber = str(request.POST.get("phoneNumber"))
-        if verifyPassword(oldPassword, id):
-            if(newPassword == confirmPassword):
-                if updateProfile(userType, firstName, lastName, phoneNumber, newPassword, id):
-                    context["changed"] = True
-                    if context["type"] == "trader":
-                        return render(request, 'traderTransactionHistory.html', context)
+        if request.POST.get("epSubmit"):
+            context["click"] = True
+            newPassword = str(request.POST.get("newPassword"))
+            confirmPassword = str(request.POST.get("confirmPassword"))
+            oldPassword = str(request.POST.get("oldPassword"))
+            firstName = str(request.POST.get("firstName"))
+            lastName = str(request.POST.get("lastName"))
+            phoneNumber = str(request.POST.get("phoneNumber"))
+            if verifyPassword(oldPassword, id):
+                if(newPassword == confirmPassword):
+                    if updateProfile(userType, firstName, lastName, phoneNumber, newPassword, id):
+                        context["changed"] = True
+                        if context["type"] == "trader":
+                            return render(request, 'traderTransactionHistory.html', context)
 
 
-    if userType == 'client':
-        selectQuery = "select firstName, lastName, phoneNumber from client where id = (%s)"
+        if userType == 'client':
+            selectQuery = "select firstName, lastName, phoneNumber from client where id = (%s)"
+        else:
+            selectQuery = "select firstName, lastName, phoneNumber from trader where id = (%s)"
+        errorMsg = "Could not find the particular user in edit profile"
+        params = (id,)
+        clientRow = db.selectPrepared(selectQuery, params, errorMsg)
+
+        if clientRow:
+            context["firstName"] = clientRow[0][0]
+            context["lastName"] = clientRow[0][1]
+            context["phoneNumber"] = clientRow[0][2]
+
+    
+        selectEmail = "select username from users where id = (%s)"
+        param = (id,)
+        emailRow = db.selectPrepared(selectEmail, param, errorMsg)
+    
+        if emailRow:
+            context["email"] = emailRow[0][0]
+    
+        return render(request, 'editProfile.html', context)
     else:
-        selectQuery = "select firstName, lastName, phoneNumber from trader where id = (%s)"
-    errorMsg = "Could not find the particular user in edit profile"
-    params = (id,)
-    clientRow = db.selectPrepared(selectQuery, params, errorMsg)
-
-    if clientRow:
-        context["firstName"] = clientRow[0][0]
-        context["lastName"] = clientRow[0][1]
-        context["phoneNumber"] = clientRow[0][2]
-
-    
-    selectEmail = "select username from users where id = (%s)"
-    param = (id,)
-    emailRow = db.selectPrepared(selectEmail, param, errorMsg)
-    
-    if emailRow:
-        context["email"] = emailRow[0][0]
-    
-    return render(request, 'editProfile.html', context)
+        return redirect("/")
     
 
 
 #view for transaction history
 
 def transactionHistoryView(request):
-    return render(request, 'transactionHistory.html')
+    if(request.session.has_key('userId')):
+        return render(request, 'transactionHistory.html')
+    else:
+        return redirect("/")
+
 
 #view for transaction history
 def transactionHistoryByTraderView(request):
@@ -265,6 +275,8 @@ def transactionHistoryByTraderView(request):
 
 #view for buy tab
 def buyView(request):
+    if(request.session.has_key('userId') == None):
+        return redirect('/')
     db = DB()
     context = {
         "accountbalance" : "",
@@ -342,7 +354,6 @@ def buyView(request):
             if commRate:
                 context["commrate"] = commRate[0][0]
 
-
         commrate = float(context["commrate"])
         btcrate = currentBtcRate
         finalbitcoins = 0.0
@@ -379,9 +390,10 @@ def buyView(request):
                            
     return render(request, 'buy.html', context)
 
-
 #view for sell tab
 def sellView(request):
+    if(request.session.has_key('userId')==None):
+        return redirect("/")
     context = {
         "id" : -1,
         "verification" : False,
@@ -477,7 +489,7 @@ def sellView(request):
         params = (metaCurrency,clientId,)
         row = db.insertPrepared(updateWalletFiatQuery,params, errorMsg)
         
-        #add to transaction
+            #add to transaction
         addtransaction(context, id, commType, totalAmount, commissionAmount, "sell", sellBitcoins, currentBtcRate, clientId)
 
         #add to metadata
@@ -490,6 +502,8 @@ def sellView(request):
 
 #view for wallet tab
 def walletView(request):
+    if(request.session.has_key('userId')==None):
+        return redirect("/")
     db = DB()
     context = {
         "fiatbalance" : "",
@@ -529,4 +543,5 @@ def walletView(request):
         if accountBlance:
             context["btcbalance"] = accountBlance[0][0]
             context["fiatbalance"] = accountBlance[0][1]
+
     return render(request, 'wallet.html', context)

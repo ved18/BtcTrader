@@ -26,6 +26,7 @@ from transactions import views as transactionsViews
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', loginViews.loginView, name='login'),
+    path('logout/', loginViews.logout, name='logout'),
     path('signup/', signupViews.signupView),
     
     #common

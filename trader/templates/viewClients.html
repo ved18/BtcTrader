@@ -105,15 +105,30 @@
               <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                   <li class="nav-item">
-                    <a class="nav-link {% if request.path == '/clients/' %} active {% endif %}" href="/viewClients/{{id}}">Clients</a>
+
+                  <li> 
+                    <a class="nav-link {% if request.path == '/clients/' %} active {% endif %}" href="/viewClients/">Clients</a>
+                  </li>
+                    <a class="nav-link" href="/traderTransactionHistory/">TransactionHistory</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="/traderTransactionHistory/{{id}}">TransactionHistory</a>
+                    <a class="nav-link" href="/buy/">Buy</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="/sell/">Sell</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="/wallet/">Wallet</a>
                   </li>
 
                   <li class="nav-item">
                     
-                    <a class="nav-link {% if request.path == '/editProfile/' %} active {% endif %}" href="/editProfile/{{id}}">  EditProfile </a>
+                    <a class="nav-link {% if request.path == '/editProfile/' %} active {% endif %}" href="/editProfile/">  EditProfile </a>
+                 
+                </li>
+                <li class="nav-item">
+                    
+                    <a class="nav-link {% if request.path == '/logout/' %} active {% endif %}" href="/logout/">  Logout </a>
                  
                 </li>
                 </ul>
