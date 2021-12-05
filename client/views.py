@@ -145,7 +145,7 @@ def updatewallet(finalbitcoins,enteredfiat,newusername, updateWalletUserId):
     row = db.selectPrepared(selectId,params,errorMsg)
     userId = row[0][0]
 
-    if userId != updateWalletUserId:
+    if str(userId) != updateWalletUserId:
         updateClientBtc = "update wallet set btcAmount=btcAmount+(%s) where userId=(%s)"
         updateQuery = "update wallet set accountBalance=accountBalance-(%s) where userId=(%s)"
         errorMsg = "cannot update clients wallet for trader transaction"
@@ -544,19 +544,4 @@ def walletView(request):
             context["btcbalance"] = accountBlance[0][0]
             context["fiatbalance"] = accountBlance[0][1]
 
-        if request.POST.get("addamount"):
-            updateQuery = "update wallet set accountBalance=accountBalance+"+ str(balance) +" where userId="+ str(id) +";"
-            errorMsg = "could not update balance"
-            db = DB()
-            row = db.insertOrUpdateOrDelete(updateQuery, errorMsg)
-            if row:
-                context["addedMoney"] = True
-
-            selectAccountBalance = "select btcAmount, accountBalance from wallet where userId=" + str(id) + ";"
-            errorMsg = "Could not find accountBalance"
-
-            accountBlance = db.select(selectAccountBalance, errorMsg)
-            if accountBlance:
-                context["btcbalance"] = accountBlance[0][0]
-                context["fiatbalance"] = accountBlance[0][1]
     return render(request, 'wallet.html', context)
