@@ -355,7 +355,7 @@ def buyView(request):
             commRate = db.select(selectUserCommRate, errorMsg)
             if commRate:
                 context["commrate"] = commRate[0][0]
-
+        print(float(context["commrate"]))
         commrate = float(context["commrate"])
         btcrate = currentBtcRate
         finalbitcoins = 0.0

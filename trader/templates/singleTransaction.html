@@ -161,7 +161,6 @@
     width: 100%;
   }
 </style>
-
 <body>
 
   <!-- navbar starts -->
@@ -213,6 +212,7 @@
         <div class="col-lg-8 grid-margin stretch-card">
           <div class="card">
             <a href="/traderTransactionHistory"><button type="button" id="backButton" class="btn btn-light">Back</button></a>
+            <input type="text" id="tid" value={{tid}}>
             <div class="card-body" id="tableContent">
               <h4 class="card-title">Transaction Details</h4>
               <table id="example" class="table" style="width:100%">
@@ -247,7 +247,14 @@
               </table>
             </div>
             <div style='width:fit-content;margin:0px auto;'>
-                <a href="/traderTransactionHistory"><button type="button" id="backButton" class="btn btn-danger">Cancel Transaction</button></a>
+                <form method="post">
+                    {% csrf_token %}
+                    <input name="tid" type="text" value={{tid}}>
+                    <input name="remarks" type="text" placeholder="Enter cancellation remarks" required>
+                  <div class="button">
+                    <button type="submit" id="btn1" class="btn btn-danger">Cancel Transaction</button>
+                  </div>
+                </form>
             </div>
             <div class="padding"></div>
           </div>
