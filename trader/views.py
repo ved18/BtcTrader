@@ -21,7 +21,9 @@ def transactionHistoryView(request):
     if(request.POST.get("remarks")):
         id = int(request.POST.get("tid"))
         remarks = request.POST.get("remarks")
-        cancel(id,remarks)
+        retVal = cancel(id,remarks)
+        if retVal:
+            return redirect('traderTransaction')
     if(request.POST.get("tid")):
         context["tid"]=int(request.POST.get('tid'))
         context["st"]=transaction.objects.filter(traderid=request.session.get("userId"),tid=context["tid"])
@@ -62,7 +64,7 @@ def cancel(id, remarks):
         if orderType=="buy":
             db.beginTransaction()
             #Update Fiat in wallet
-            updateQuery = "update wallet w set w.accountBalance = w.accountBalance+(%s) where id=(%s)"
+            updateQuery = "update wallet set accountBalance = accountBalance+(%s) where id=(%s)"
             errorMsg = "could not update wallet"
             param=(totalAmt,walletId,)
             row = db.insertPrepared(updateQuery,param,errorMsg)
@@ -79,12 +81,23 @@ def cancel(id, remarks):
                     print(tid, remarks,now)
                     updateQuery = "insert into cancelLogs values ((%s),(%s),(%s))"
                     errorMsg = "could not insert into logs"
-                    param=(tid,remarks,now,)
+                    param=(tid,now,remarks)
                     row = db.insertPrepared(updateQuery,param,errorMsg)
                     if row:
-                        db.commit()
-                        return redirect(request,"/viewClients")
-
+                        #update transaction status
+                        updateQuery = "update transaction set status='cancelled' where tid=(%s)"
+                        errorMsg = "couldnt update transaction status"
+                        param = (tid,)
+                        row = db.insertPrepared(updateQuery, param, errorMsg)
+                        if row:
+                            #update metadata
+                            updateQuery = "update metadata set totalBtc = totalBtc + (%s), totalCurrency = totalCurrency - (%s)"
+                            errorMsg = "couldnt update metadata"
+                            param = (btcAmt, totalAmt)
+                            db.insertPrepared(updateQuery, param, errorMsg)
+                            if row:
+                                db.commit()
+                                return True
             db.rollback()
 
 

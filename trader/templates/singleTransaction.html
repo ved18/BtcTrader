@@ -246,6 +246,8 @@
                 </tbody>
               </table>
             </div>
+            {% for s in st %}
+            {% if s.status != "cancelled" and s.ordertype != "sell"%}
             <div style='width:fit-content;margin:0px auto;'>
                 <form method="post">
                     {% csrf_token %}
@@ -256,6 +258,8 @@
                   </div>
                 </form>
             </div>
+            {% endif %}
+            {% endfor %}
             <div class="padding"></div>
           </div>
         </div>
