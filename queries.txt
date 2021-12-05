@@ -15,3 +15,4 @@ SET FOREIGN_KEY_CHECKS=0;
 alter table wallet modify column id int AUTO_INCREMENT Not Null;
 SET FOREIGN_KEY_CHECKS=1;
 alter table transaction modify traderId int;
+alter table transaction modify column date timestamp;
