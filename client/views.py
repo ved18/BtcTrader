@@ -555,11 +555,21 @@ def walletView(request):
         updateQuery = "update wallet set accountBalance=accountBalance+(%s) where id=(%s)"
         errorMsg = "could not update balance"
         db = DB()
+        db.beginTransaction()
         params =(balance,id,)
-        row = db.insertPrepared(updateQuery,params, errorMsg)
-        if row:
+        row1 = db.insertPrepared(updateQuery,params, errorMsg)
+        if row1:
             context["addedMoney"] = True
-
+            now = datetime.now()
+            #adding to wallet transactions
+            insertQuery = "Insert into walletTransactions(walletId, amount, date) values((%s),(%s),(%s))"
+            params = (id, balance, now,)
+            errorMsg = "cannot add into wallet history"
+            row2 = db.insertPrepared(insertQuery, params, errorMsg)
+            if row2:
+                db.commit()
+        if not (row1 and row2):
+                db.rollback()
         selectAccountBalance = "select btcAmount, accountBalance from wallet where id=(%s)"
         errorMsg = "Could not find accountBalance"
         params = (id,)
