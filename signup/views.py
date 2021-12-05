@@ -25,31 +25,43 @@ def signupView(request):
         password = str(request.POST.get("password"))
         usertype = str(request.POST.get("usertype"))
         #inserting new user into users table
-        insertEmailQuery = "Insert into users(username) values('" + email + "');"
-        errorMsg = "Cannot insert user into db"        
-        insertEmail = db.insertOrUpdateOrDelete(insertEmailQuery, errorMsg)
+        
+        insertEmailQuery = "Insert into users(username) values(%s)"
+        errorMsg = "Cannot insert user into db"
+        param = (email,)
+        insertEmail = db.insertPrepared(insertEmailQuery, param, errorMsg)
 
         #selecting id of user currently inserted
-        selectQuery = "select id from users where username = '" + email + "';"
-        tuple = (email)
-
-        row = db.select(selectQuery, errorMsg)
+        selectQuery = "select id from users where username = (%s)"
+        param = (email,)
+        row = db.selectPrepared(selectQuery, param, errorMsg)
         id = str(row[0][0])
 
         #insert password and client type in login table
-        insertPasswordQuery = "Insert into login(id, password, type) values(" + id + ", '"+ password + "', '" + usertype + "');"
-        insertPassword = db.insertOrUpdateOrDelete(insertPasswordQuery, errorMsg)
+        insertPasswordQuery = "Insert into login(id, password, type) values((%s), (%s), (%s))"
+        param = (id,password, usertype)
+        insertPassword = db.insertPrepared(insertPasswordQuery, param, errorMsg)
 
-        insertClientQuery = "Insert into client values(" + id + ", '"+ firstName +"', '"+ lastName +"', '"+ state +"', '"+ city +"', '"+ street +"', " + zip + ", " + phoneNumber + ", " + cellNumber + ", 'silver');"
-        insertTraderQuery = "Insert into trader values(" + id + ", '"+ firstName +"', '"+ lastName +"', '"+ state +"', '"+ city +"', '"+ street +"', " + zip + ", " + phoneNumber + ", " + cellNumber + ");"
-        
+        insertClientQuery = "Insert into client values((%s),(%s),(%s),(%s),(%s),(%s),(%s),(%s),(%s),(%s))"
+        insertTraderQuery = "Insert into trader values((%s),(%s),(%s),(%s),(%s),(%s),(%s),(%s),(%s))"
+        userType = "silver"
         insertClient = insertTrader = False
         if usertype == "client":
-            insertClient = db.insertOrUpdateOrDelete(insertClientQuery, errorMsg)
+            param = (id, firstName, lastName, state, city, street, zip, phoneNumber, cellNumber, userType)
+            insertClient = db.insertPrepared(insertClientQuery, param, errorMsg)
         elif usertype == "trader":
-            insertTrader = db.insertOrUpdateOrDelete(insertTraderQuery, errorMsg)
+            param = param = (id, firstName, lastName, state, city, street, zip, phoneNumber, cellNumber)
+            insertTrader = db.insertPrepared(insertTraderQuery, param, errorMsg)
 
-        if insertEmail and insertPassword and (insertTrader or insertClient):
+        insertWalletQuery = "Insert into wallet values((%s),(%s), (%s))"
+        btcAmount=0
+        btcBalance=0
+        param = (id, btcAmount, btcBalance)
+        errorMsg = "could not add wallet"
+
+        insertWallet = db.insertPrepared(insertWalletQuery, param, errorMsg)
+
+        if  insertWalletQuery and insertEmail and insertPassword and (insertTrader or insertClient):
             return redirect('login')
         
     return render(request, 'signup.html', context)
