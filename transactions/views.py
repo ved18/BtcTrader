@@ -14,7 +14,4 @@ def viewtransaction(request):
     else:
     	if(idType=="client"):
     		st=Transaction.objects.filter(clientid=id)
-    	else:
-    		if(idType=="trader"):
-    			st=Transaction.objects.filter(traderid=id)
     return render(request, 'transactions.html',{'st':st})
