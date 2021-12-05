@@ -40,7 +40,7 @@ def homeView(request):
         if clientRowInv:
             context["investmentAmount"]=clientRowInv[0][0]
 
-        selectTypeQuery = "select btcAmount, accountBalance from wallet where userId=(%s)"
+        selectTypeQuery = "select btcAmount, accountBalance from wallet where id=(%s)"
         errorMsg = "could not select required values"
         param = (id,)
         clientRow = db.selectPrepared(selectTypeQuery, param, errorMsg)
@@ -127,7 +127,7 @@ def verifyUsername(newusername,id):
 
 #function to check if user has sufficient balance
 def verifyBalance(enteredfiat,id):
-    selectBalance = "select accountBalance from wallet where userId=(%s)"
+    selectBalance = "select accountBalance from wallet where id=(%s)"
     errorMsg = "could not find Username"
 
     params = (id,)
@@ -148,14 +148,14 @@ def updatewallet(finalbitcoins,enteredfiat,newusername, updateWalletUserId):
     userId = row[0][0]
 
     if str(userId) != updateWalletUserId:
-        updateClientBtc = "update wallet set btcAmount=btcAmount+(%s) where userId=(%s)"
-        updateQuery = "update wallet set accountBalance=accountBalance-(%s) where userId=(%s)"
+        updateClientBtc = "update wallet set btcAmount=btcAmount+(%s) where id=(%s)"
+        updateQuery = "update wallet set accountBalance=accountBalance-(%s) where id=(%s)"
         errorMsg = "cannot update clients wallet for trader transaction"
         params1 = (finalbitcoins,userId,)
         params2 = (enteredfiat,updateWalletUserId,)
         row = db.insertPrepared(updateClientBtc,params1,errorMsg)
     else:
-        updateQuery = "update wallet set btcAmount=btcAmount+(%s),accountBalance=accountBalance-(%s) where userId=(%s)"
+        updateQuery = "update wallet set btcAmount=btcAmount+(%s),accountBalance=accountBalance-(%s) where id=(%s)"
         params2 = (finalbitcoins,enteredfiat,updateWalletUserId,)
     
     errorMsg = "could not update wallet"
@@ -169,7 +169,7 @@ def addtransaction(context,id,commtype,enteredfiat,commamount,buttontype,finalbi
 
     db = DB()
 
-    selectWallet = "select id from wallet where userId=(%s)"
+    selectWallet = "select id from wallet where id=(%s)"
     errorMsg = "could not find wallet id"
     params = (id,)
     row = db.selectPrepared(selectWallet,params,errorMsg)
@@ -305,7 +305,7 @@ def buyView(request):
     context['btcrate'] = currentBtcRate
 
 
-    selectAccountBalance = "select accountBalance from wallet where userId= (%s)"
+    selectAccountBalance = "select accountBalance from wallet where id= (%s)"
     errorMsg = "Could not find accountBalance"
 
     params = (id,)
@@ -330,6 +330,10 @@ def buyView(request):
         row = db.selectPrepared(selectId,params,errorMsg)
         if row:
             userId = row[0][0]
+        else:
+            context["nameverified"] = False
+            return render(request, 'buy.html', context)
+
         
         #find commission rate for the user of trader
         selectUserCommType = "select type from client where id=(%s)"
@@ -374,7 +378,7 @@ def buyView(request):
                 userId = updatewallet(finalbitcoins,enteredfiat,newusername, id)
                 if userId:
                     context["updatedwallet"] = True
-                    selectAccountBalance = "select accountBalance from wallet where userId=(%s)"
+                    selectAccountBalance = "select accountBalance from wallet where id=(%s)"
                     errorMsg = "Could not find accountBalance"
                     params = (id,)
                     accountBlance = db.selectPrepared(selectAccountBalance,params,errorMsg)
@@ -398,11 +402,12 @@ def sellView(request):
         return redirect("/")
     context = {
         "id" : -1,
-        "verification" : False,
+        "verification" : True,
         "btcCap" : False,
         "userType" : "",
         "btcRate" : -1,
-        "btcAmount" : 0
+        "btcAmount" : 0,
+        "click" : False
     }
     id = request.session.get('userId')
     context["id"] = id
@@ -414,7 +419,16 @@ def sellView(request):
     userType = request.session.get('userType')
     context["userType"]= userType
 
+    selectAccountBtc = "select btcAmount from wallet where id= (%s)"
+    errorMsg = "Could not find accountBalance"
+
+    params = (id,)
+    accountBlance = db.selectPrepared(selectAccountBtc,params, errorMsg)
+    if accountBlance:
+        context["btcAmount"] = accountBlance[0][0]
+
     if request.POST.get("sellSubmit"):
+        context["click"] = True
         username = str(request.POST.get("userName"))
         sellBitcoins = float(request.POST.get("bitcoins"))
         commType = request.POST.get("btcfiat")
@@ -429,10 +443,10 @@ def sellView(request):
             clientId = row[0][0]
         else:
             context["verification"] = False
-            return render(request, 'transactionHistory.html', context)
+            return render(request, 'sell.html', context)
 
         #query to check bitcoins in users wallet
-        selectQuery = "select id, btcAmount from wallet where userId= (%s)"
+        selectQuery = "select id, btcAmount from wallet where id= (%s)"
         errorMsg = "could not fetch number bitcoins from wallet"
         params = (clientId,)
         row = db.selectPrepared(selectQuery,params, errorMsg)
@@ -442,11 +456,11 @@ def sellView(request):
             context["btcAmount"] = totalBitcoins
         else:
             context["verification"] = False
-            return render(request, 'transactionHistory.html', context)
+            return render(request, 'sell.html', context)
 
         if totalBitcoins < sellBitcoins:
             context["btcCap"] = True
-            return render(request, 'transactionHistory.html', context)
+            return render(request, 'sell.html', context)
 
         #calculate remaining btc to update user wallet and also update bank wallet
         updateBtcUser = totalBitcoins - sellBitcoins
@@ -479,13 +493,13 @@ def sellView(request):
         #total amount obtained after selling bitcoin
 
         #update user wallet
-        updateBtcWalletQuery = "update wallet set btcAmount=(%s) where userId=(%s)"
+        updateBtcWalletQuery = "update wallet set btcAmount=(%s) where id=(%s)"
         errorMsg = "could not update client wallet after sell"
 
         params = (updateBtcUser,clientId,)
         row = db.insertPrepared(updateBtcWalletQuery,params, errorMsg)
 
-        updateWalletFiatQuery = "update wallet set accountBalance=accountBalance+(%s) where userId=(%s)"
+        updateWalletFiatQuery = "update wallet set accountBalance=accountBalance+(%s) where id=(%s)"
         errorMsg = "could not update user wallet for amount"
 
         params = (metaCurrency,clientId,)
@@ -499,6 +513,14 @@ def sellView(request):
         errorMsg = "cannot update metadata"
         params = (sellBitcoins,metaCurrency,)
         row = db.selectPrepared(updateMetaQuery,params, errorMsg)
+
+        selectAccountBtc = "select btcAmount from wallet where id= (%s)"
+        errorMsg = "Could not find accountBalance"
+
+        params = (id,)
+        accountBlance = db.selectPrepared(selectAccountBtc,params, errorMsg)
+        if accountBlance:
+          context["btcAmount"] = accountBlance[0][0]
 
     return render(request, 'sell.html', context)
 
@@ -520,7 +542,7 @@ def walletView(request):
     userType = request.session.get('userType')
     context["type"] = userType
 
-    selectAccountBalance = "select btcAmount, accountBalance from wallet where userId=(%s)"
+    selectAccountBalance = "select btcAmount, accountBalance from wallet where id=(%s)"
     errorMsg = "Could not find accountBalance"
 
     params = (id,)
@@ -530,7 +552,7 @@ def walletView(request):
         context["fiatbalance"] = accountBlance[0][1]
 
     if request.POST.get("addamount"):
-        updateQuery = "update wallet set accountBalance=accountBalance+(%s) where userId=(%s)"
+        updateQuery = "update wallet set accountBalance=accountBalance+(%s) where id=(%s)"
         errorMsg = "could not update balance"
         db = DB()
         params =(balance,id,)
@@ -538,7 +560,7 @@ def walletView(request):
         if row:
             context["addedMoney"] = True
 
-        selectAccountBalance = "select btcAmount, accountBalance from wallet where userId=(%s)"
+        selectAccountBalance = "select btcAmount, accountBalance from wallet where id=(%s)"
         errorMsg = "Could not find accountBalance"
         params = (id,)
         accountBlance = db.selectPrepared(selectAccountBalance,params, errorMsg)
