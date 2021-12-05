@@ -17,11 +17,13 @@ def homeView(request):
             "netgainloss":"",
             "t1":0,
             "t2":0,
-            "ans":"",}
+            "ans":"",
+            "userType":""}
 
     # if(request.session.get('loggedIn') == False):
     #     return redirect('login')
         id = request.session.get('userId')
+        context["userType"] = request.session.get('userType')
         db = DB()
         context["id"] = id
         selectUsername = "select firstName from client where id=(%s)"
