@@ -7,7 +7,7 @@ from .models import Transaction
 # Create your views here.
 
 def viewtransaction(request):
-    idType = "manager"
+    idType = request.session.get('userType')
     id = request.session.get('userId')
     if(idType=="manager"):
     	st=Transaction.objects.all()
