@@ -213,18 +213,25 @@
                                 <th>PhoneNumber</th>
                                 <th>CellNumber</th>
                             </tr>
+                            {% for tuple in dict %}
                             <tr>
-                                <td>{{ id }}</td>
-                                <td>{{ first }}</td>
-                                <td>{{ last }}</td>
-                                <td>{{ state }}</td>
-                                <td>{{ city }}</td>
-                                <td>{{ phone }}</td>
-                                <td>{{ cell }}</td>
+                                <td>{{ tuple.id }}</td>
+                                <td>{{ tuple.first }}</td>
+                                <td>{{ tuple.last }}</td>
+                                <td>{{ tuple.state }}</td>
+                                <td>{{ tuple.city }}</td>
+                                <td>{{ tuple.phone }}</td>
+                                <td>{{ tuple.cell }}</td>
                             </tr>
+                            {% endfor %}
                         </table> 
                 </div>                    
           </form>
+          {% if click == True and foundrec == False%}
+          <div style="width: fit-content; color: red;" role="alert">
+              No records found
+          </div>
+      {% endif %}
         </div>
     </div>
 

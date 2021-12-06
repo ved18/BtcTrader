@@ -572,11 +572,10 @@ def walletView(request):
 
 def searchTraderView(request):
     context = {
-        "dict":{ },
+        "dict":[],
         "type" : "",
         "type" : "client",
         "click" : False,
-        "nameverified" : True,
         "id":"",
         "first":"",
         "last":"",
@@ -617,10 +616,11 @@ def searchTraderView(request):
         
         traderdetails = db.selectPrepared(selectName,params, errorMsg)
 
+        searchDetails = []
         if traderdetails:
+            context["foundrec"] = True
             for i in traderdetails:
                 temp={}
-                
                 temp["id"] = i[0]
                 temp["first"] = i[1]
                 temp["last"] = i[2]
@@ -628,6 +628,9 @@ def searchTraderView(request):
                 temp["city"] = i[4]
                 temp["phone"] = i[5]
                 temp["cell"] = i[6]
+                searchDetails.append(temp)
+
+        context["dict"] = searchDetails
 
     return render(request, 'searchTrader.html', context)
 
