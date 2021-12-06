@@ -32,6 +32,11 @@
                   <li class="nav-item">
                     <a class="nav-link" href="/wallet/">Wallet</a>
                   </li>
+                  {% if userType == "client" %}
+                  <li class="nav-item">
+                    <a class="nav-link" href="/searchTrader/">Search</a>
+                  </li>
+                  {% endif %}
                   <li class="nav-item">
                     <a class="nav-link {% if request.path == '/editProfile/' %} active {% endif %}" href="/editProfile/">  EditProfile </a>
                 </li>

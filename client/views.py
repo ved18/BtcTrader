@@ -289,7 +289,7 @@ def buyView(request):
         "commtype" : "",
         "commrate" : "",
         "updatedwallet" : False,
-        "balanceverified" : False,
+        "commissionverified" : False,
         "userType" : "client",
         "transactionadded" : False,
     }
@@ -342,57 +342,60 @@ def buyView(request):
         params = (userId,)
         commType = db.selectPrepared(selectUserCommType,params, errorMsg)
         if commType:
+            context["commissionverified"] = True
             context["commtype"] = commType[0][0]
 
-        if context["commtype"] == "silver":
-            selectUserCommRate = "select commissionSilver from metadata;"
-            errorMsg = "Could not find users commission rate"
+            if context["commtype"] == "silver":
+                selectUserCommRate = "select commissionSilver from metadata;"
+                errorMsg = "Could not find users commission rate"
 
-            commRate = db.select(selectUserCommRate, errorMsg)
-            if commRate:
-                context["commrate"] = commRate[0][0]
+                commRate = db.select(selectUserCommRate, errorMsg)
+                if commRate:
+                    context["commrate"] = commRate[0][0]
 
-        elif context["commtype"] == "gold":
-            selectUserCommRate = "select commissionGold from metadata;"
-            errorMsg = "Could not find users commission rate"
+            elif context["commtype"] == "gold":
+                selectUserCommRate = "select commissionGold from metadata;"
+                errorMsg = "Could not find users commission rate"
 
-            commRate = db.select(selectUserCommRate, errorMsg)
-            if commRate:
-                context["commrate"] = commRate[0][0]
-        print(float(context["commrate"]))
-        commrate = float(context["commrate"])
-        btcrate = currentBtcRate
-        finalbitcoins = 0.0
+                commRate = db.select(selectUserCommRate, errorMsg)
+                if commRate:
+                    context["commrate"] = commRate[0][0]
 
-        if verifyUsername(newusername, userId):
-            context["nameverified"] = True
-            if verifyBalance(enteredfiat,id):
-                context["balanceverified"] = True
+            commrate = float(context["commrate"])
+            btcrate = currentBtcRate
+            finalbitcoins = 0.0
 
-                if commtype == "fiat":
-                    finalbitcoins = (enteredfiat*(1-(commrate)/100))/btcrate
-                elif commtype == "bitcoin":
-                    finalbitcoins = (enteredfiat*(1-(commrate)/100))/btcrate
+            if verifyUsername(newusername, userId):
+                context["nameverified"] = True
+                if verifyBalance(enteredfiat,id):
+                    context["balanceverified"] = True
 
-                commamount = (enteredfiat*commrate)/100
-                userId = updatewallet(finalbitcoins,enteredfiat,newusername, id)
-                if userId:
-                    context["updatedwallet"] = True
-                    selectAccountBalance = "select accountBalance from wallet where id=(%s)"
-                    errorMsg = "Could not find accountBalance"
-                    params = (id,)
-                    accountBlance = db.selectPrepared(selectAccountBalance,params,errorMsg)
+                    if commtype == "fiat":
+                        finalbitcoins = (enteredfiat*(1-(commrate)/100))/btcrate
+                    elif commtype == "bitcoin":
+                        finalbitcoins = (enteredfiat*(1-(commrate)/100))/btcrate
 
-                    if accountBlance:
-                        context["accountbalance"] = accountBlance[0][0]
-                    if addtransaction(context,id,commtype,enteredfiat,commamount,buttontype,finalbitcoins,btcrate, userId):
-                        context["transactionadded"] = True
+                    commamount = (enteredfiat*commrate)/100
+                    userId = updatewallet(finalbitcoins,enteredfiat,newusername, id)
+                    if userId:
+                        context["updatedwallet"] = True
+                        selectAccountBalance = "select accountBalance from wallet where id=(%s)"
+                        errorMsg = "Could not find accountBalance"
+                        params = (id,)
+                        accountBlance = db.selectPrepared(selectAccountBalance,params,errorMsg)
 
-                        updateQuery = "update metadata set totalBtc=totalBtc-(%s), totalCurrency=totalCurrency+(%s)"
-                        errorMsg = "could not update metadata"
-                        db = DB()
-                        params = (finalbitcoins,enteredfiat,)
-                        db.insertPrepared(updateQuery,params, errorMsg)
+                        if accountBlance:
+                            context["accountbalance"] = accountBlance[0][0]
+                        if addtransaction(context,id,commtype,enteredfiat,commamount,buttontype,finalbitcoins,btcrate, userId):
+                            context["transactionadded"] = True
+
+                            updateQuery = "update metadata set totalBtc=totalBtc-(%s), totalCurrency=totalCurrency+(%s)"
+                            errorMsg = "could not update metadata"
+                            db = DB()
+                            params = (finalbitcoins,enteredfiat,)
+                            db.insertPrepared(updateQuery,params, errorMsg)
+        else:
+            return render(request, 'buy.html', context)
                            
     return render(request, 'buy.html', context)
 
@@ -579,3 +582,68 @@ def walletView(request):
             context["fiatbalance"] = accountBlance[0][1]
 
     return render(request, 'wallet.html', context)
+
+def searchTraderView(request):
+    context = {
+        "dict":[],
+        "type" : "",
+        "type" : "client",
+        "click" : False,
+        "id":"",
+        "first":"",
+        "last":"",
+        "phone":"",
+        "cell":"",
+        "state":"",
+        "city":"",
+        "foundrec": False,
+    }
+
+    if request.POST.get("searchtrader"):
+        context["click"] = True
+        name = str(request.POST.get("name"))
+        option = str(request.POST.get("dropdownoption"))
+
+
+        db=DB()
+        if option=="id":
+            selectName = "select id,firstName,lastName,state,city,phoneNumber,cellNumber from trader where id=(%s)"
+            errorMsg = "Could not find trader"
+            params = (name,)
+
+        elif option=="firstName":
+            selectName = "select id,firstName,lastName,state,city,phoneNumber,cellNumber from trader where firstName=(%s)"
+            errorMsg = "Could not find trader"
+            params = (name,)
+
+        elif option=="state":
+            selectName = "select id,firstName,lastName,state,city,phoneNumber,cellNumber from trader where state=(%s)"
+            errorMsg = "Could not find trader"
+            params = (name,)
+
+        elif option=="city":
+            selectName = "select id,firstName,lastName,state,city,phoneNumber,cellNumber from trader where city=(%s)"
+            errorMsg = "Could not find trader"
+            params = (name,)
+
+        
+        traderdetails = db.selectPrepared(selectName,params, errorMsg)
+
+        searchDetails = []
+        if traderdetails:
+            context["foundrec"] = True
+            for i in traderdetails:
+                temp={}
+                temp["id"] = i[0]
+                temp["first"] = i[1]
+                temp["last"] = i[2]
+                temp["state"] = i[3]
+                temp["city"] = i[4]
+                temp["phone"] = i[5]
+                temp["cell"] = i[6]
+                searchDetails.append(temp)
+
+        context["dict"] = searchDetails
+
+    return render(request, 'searchTrader.html', context)
+

@@ -5,7 +5,7 @@
     </head>
     <style>
       @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
- 
+    
   .container{
     max-width: 700px;
     width: 100%;
@@ -168,14 +168,19 @@
                     </li>
                   {% endif %}
                   <li class="nav-item">
-                    <a class="nav-link" href="/buy/">Buy</a>
+                    <a class="nav-link {% if request.path == '/buy/' %} active {% endif %}" aria-current="page" href="/buy/">Buy</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="/sell/">Sell</a>
+                    <a class="nav-link {% if request.path == '/sell/' %} active {% endif %}" aria-current="page" href="/sell/">Sell</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="/wallet/">Wallet</a>
+                    <a class="nav-link {% if request.path == '/wallet/' %} active {% endif %}" aria-current="page" href="/wallet/">Wallet</a>
                   </li>
+                  {% if userType == "client" %}
+                  <li class="nav-item">
+                    <a class="nav-link" href="/searchTrader/">Search</a>
+                  </li>
+                  {% endif %}
                   <li class="nav-item">
                     <a class="nav-link {% if request.path == '/editProfile/' %} active {% endif %}" href="/editProfile/">  EditProfile </a>     
                 </li>
@@ -195,7 +200,7 @@
           <form method="post">
               {% csrf_token %}
             <div class="user-details">
-              {% if type == 'client' %}
+              {% if userType == 'client' %}
                 <div class="input-box">
                     <span class="details">Enter your Username</span>
                     <input name="username" type="text" placeholder="Username" required>
@@ -234,6 +239,10 @@
           {% if click == True and nameverified == False%}
           <div style="width: fit-content; color: red;" role="alert">
               Enter correct username
+          </div>
+          {% elif click == True and commissionverified == False%}
+          <div style="width: fit-content; color: red;" role="alert">
+              User is not a client
           </div>
       {% elif click == True and balanceverified == False%}
           <div style="width: fit-content; color: red;" role="alert">
