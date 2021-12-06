@@ -185,7 +185,7 @@
                   <li> 
                     <a class="nav-link {% if request.path == '/clients/' %} active {% endif %}" href="/viewClients/">Clients</a>
                   </li>
-                    <a class="nav-link" href="/traderTransactionHistory/">TransactionHistory</a>
+                    <a class="nav-link {% if request.path == '/traderTransactionHistory/' %} active {% endif %}" aria-current="page" href="/traderTransactionHistory/">TransactionHistory</a>
                   </li>
                   <li class="nav-item">
                     <a class="nav-link" href="/buy/">Buy</a>

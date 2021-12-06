@@ -23,6 +23,10 @@ alter table transaction modify column date timestamp;
 
 alter table wallet drop constraint wallet_ibfk_1;
 alter table wallet drop column userId
+alter table client modify phoneNumber varchar(20) NOT NULL;
+alter table trader modify phoneNumber varchar(20) NOT NULL;
+alter table client modify cellNumber varchar(20) NOT NULL;
+alter table trader modify cellNumber varchar(20) NOT NULL;
 
 Correct Queries:
 

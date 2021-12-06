@@ -184,7 +184,7 @@
                     <a class="nav-link {% if request.path == '/home/' %} active {% endif %}" aria-current="page" href="/home/">Home</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="/transactionHistory/">TransactionHistory</a>
+                    <a class="nav-link {% if request.path == '/transactionHistory/' %} active {% endif %}" aria-current="page" href="/transactionHistory/">TransactionHistory</a>
                   </li>
                   <li class="nav-item">
                     <a class="nav-link" href="/buy/">Buy</a>
@@ -194,6 +194,9 @@
                   </li>
                   <li class="nav-item">
                     <a class="nav-link" href="/wallet/">Wallet</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="/searchTrader/">Search</a>
                   </li>
                   <li class="nav-item">
                     <a class="nav-link {% if request.path == '/editProfile/' %} active {% endif %}" href="/editProfile/">EditProfile</a>

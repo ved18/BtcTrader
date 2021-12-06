@@ -569,3 +569,65 @@ def walletView(request):
             context["fiatbalance"] = accountBlance[0][1]
 
     return render(request, 'wallet.html', context)
+
+def searchTraderView(request):
+    context = {
+        "dict":{ },
+        "type" : "",
+        "type" : "client",
+        "click" : False,
+        "nameverified" : True,
+        "id":"",
+        "first":"",
+        "last":"",
+        "phone":"",
+        "cell":"",
+        "state":"",
+        "city":"",
+        "foundrec": False,
+    }
+
+    if request.POST.get("searchtrader"):
+        context["click"] = True
+        name = str(request.POST.get("name"))
+        option = str(request.POST.get("dropdownoption"))
+
+
+        db=DB()
+        if option=="id":
+            selectName = "select id,firstName,lastName,state,city,phoneNumber,cellNumber from trader where id=(%s)"
+            errorMsg = "Could not find trader"
+            params = (name,)
+
+        elif option=="firstName":
+            selectName = "select id,firstName,lastName,state,city,phoneNumber,cellNumber from trader where firstName=(%s)"
+            errorMsg = "Could not find trader"
+            params = (name,)
+
+        elif option=="state":
+            selectName = "select id,firstName,lastName,state,city,phoneNumber,cellNumber from trader where state=(%s)"
+            errorMsg = "Could not find trader"
+            params = (name,)
+
+        elif option=="city":
+            selectName = "select id,firstName,lastName,state,city,phoneNumber,cellNumber from trader where city=(%s)"
+            errorMsg = "Could not find trader"
+            params = (name,)
+
+        
+        traderdetails = db.selectPrepared(selectName,params, errorMsg)
+
+        if traderdetails:
+            for i in traderdetails:
+                temp={}
+                
+                temp["id"] = i[0]
+                temp["first"] = i[1]
+                temp["last"] = i[2]
+                temp["state"] = i[3]
+                temp["city"] = i[4]
+                temp["phone"] = i[5]
+                temp["cell"] = i[6]
+
+    return render(request, 'searchTrader.html', context)
+

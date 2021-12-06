@@ -171,11 +171,17 @@
                     <a class="nav-link" href="/buy/">Buy</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="/sell/">Sell</a>
+                    <a class="nav-link {% if request.path == '/sell/' %} active {% endif %}" aria-current="page" href="/sell/">Sell</a>
                   </li>
                   <li class="nav-item">
                     <a class="nav-link" href="/wallet/">Wallet</a>
                   </li>
+                  {% if userType == "client" %}
+                  <li class="nav-item">
+                    <a class="nav-link" href="/searchTrader/">Search</a>
+                  </li>
+                  {% endif %}
+
                   <li class="nav-item">
                     <a class="nav-link {% if request.path == '/editProfile/' %} active {% endif %}" href="/editProfile/">  EditProfile </a>     
                 </li>
