@@ -202,10 +202,17 @@
           <form method="post">
               {% csrf_token %}
                 <div class="user-details">
-                    <div class="input-box">
+                  {% if userType == "client" %}
+                      <div class="input-box">
                         <span class="details">Enter your Username</span>
                         <input name="userName" type="text" placeholder="Username" required>
                     </div>
+                    {% else %}
+                    <div class="input-box">
+                        <span class="details">Enter Client's Username</span>
+                        <input name="userName" type="text" placeholder="Username" required>
+                    </div>
+                    {% endif %}
                     <div class="input-box">
                       <span class="details">Current Bitcon Rate</span>
                       <input name="rate" type="text" placeholder="Btc Rate" value ="${{btcRate}}" disabled>
