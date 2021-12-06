@@ -18,7 +18,6 @@ def managerloginView(request):
         context["loginSubmit"] = True
         username = str(request.POST.get('username'))
         password = str(request.POST.get('password'))
-            # print(username, password)
         selectQuery = "select password from manager where username=(%s)"
         param = (username,)
         errorMsg = "No matching entry found"
@@ -44,16 +43,13 @@ def managerhomeView(request):
         errorMsg = "Unable to fetch data."
         row = db.select(selectQuery,errorMsg)
         context["clientCount"]=row[0][0]
-        print(context["clientCount"])
         selectQuery = "select count(*) from trader;"
         row = db.select(selectQuery,errorMsg)
         context["traderCount"]=row[0][0]
-        print(context["traderCount"])
         selectQuery = "select sum(commissionAmount) from transaction;"
         row = db.select(selectQuery,errorMsg)
         if(row[0][0]):
             context["totalCommission"]=row[0][0]
-        print(context["totalCommission"])
         return render(request, 'managerhomePage.html',context)
     else:
         return render(request, "managerlogin.html")
