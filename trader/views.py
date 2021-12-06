@@ -57,7 +57,7 @@ def cancel(id, remarks):
         traderId = row[0][2]
         totalAmt = row[0][4]
         commAmt = row[0][5]
-        orderType = row[0][6]
+        orderType = row[0][6].lower()
         btcAmt = row[0][9]
         walletId = row[0][11]
 
