@@ -229,74 +229,7 @@ for (const key in params) {
 document.body.appendChild(form);
 form.submit();
 }
-<<<<<<< HEAD
-      </style>
-    <script>
-        // Selecting the iframe element
-        var frame = document.getElementById("Iframe");
-          
-        // Adjusting the iframe height onload event
-        frame.onload = function()
-        // function execute while load the iframe
-        {
-          // set the height of the iframe as 
-          // the height of the iframe content
-          frame.style.height = 
-          frame.contentWindow.document.body.scrollHeight + 'px';
-           
-  
-         // set the width of the iframe as the 
-         // width of the iframe content
-         frame.style.width  = 
-          frame.contentWindow.document.body.scrollWidth+'px';
-              
-        }
-    </script>
-    <body>
-
-        <!-- navbar starts -->
-
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="/traderTransactionHistory/">BtcTrader</a>
-              <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                  <li class="nav-item">
-
-                  <li> 
-                    <a class="nav-link {% if request.path == '/clients/' %} active {% endif %}" href="/viewClients/">Clients</a>
-                  </li>
-                    <a class="nav-link {% if request.path == '/traderTransactionHistory/' %} active {% endif %}" aria-current="page" href="/traderTransactionHistory/">TransactionHistory</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="/buy/">Buy</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="/sell/">Sell</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="/wallet/">Wallet</a>
-                  </li>
-
-                  <li class="nav-item">
-                    
-                    <a class="nav-link {% if request.path == '/editProfile/' %} active {% endif %}" href="/editProfile/">  EditProfile </a>
-                 
-                </li>
-                <li class="nav-item">
-                    
-                    <a class="nav-link {% if request.path == '/logout/' %} active {% endif %}" href="/logout/">  Logout </a>
-                 
-                </li>
-                </ul>
-                
-
-              </div>
-            </div>
-          </nav>
-        <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script> -->
-=======
-</script>
+  </script>
 
 <body>
 
@@ -304,16 +237,15 @@ form.submit();
 
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
-      <a class="navbar-brand" href="/traderTransactionHistory/">BtcTrader</a>
+      <a class="navbar-brand " href="/traderTransactionHistory/">BtcTrader</a>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
->>>>>>> master
 
           <li>
             <a class="nav-link {% if request.path == '/clients/' %} active {% endif %}" href="/viewClients/">Clients</a>
           </li>
-          <a class="nav-link" href="/traderTransactionHistory/">TransactionHistory</a>
+          <a class="nav-link {% if request.path == '/traderTransactionHistory/' %} active {% endif %}" href="/traderTransactionHistory/">TransactionHistory</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="/buy/">Buy</a>
