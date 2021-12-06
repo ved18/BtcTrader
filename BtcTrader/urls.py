@@ -44,7 +44,7 @@ urlpatterns = [
     #trader
 
     path('traderTransactionHistory/', traderViews.transactionHistoryView, name='traderTransaction'),
-    path('viewClients/', traderViews.viewClients),
+    path('viewClients/', traderViews.viewClients, name='viewClient'),
 
 
     #manager
