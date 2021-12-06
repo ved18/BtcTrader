@@ -289,7 +289,7 @@ def buyView(request):
         "commtype" : "",
         "commrate" : "",
         "updatedwallet" : False,
-        "balanceverified" : False,
+        "commissionverified" : False,
         "userType" : "client",
         "transactionadded" : False,
     }
@@ -342,57 +342,60 @@ def buyView(request):
         params = (userId,)
         commType = db.selectPrepared(selectUserCommType,params, errorMsg)
         if commType:
+            context["commissionverified"] = True
             context["commtype"] = commType[0][0]
 
-        if context["commtype"] == "silver":
-            selectUserCommRate = "select commissionSilver from metadata;"
-            errorMsg = "Could not find users commission rate"
+            if context["commtype"] == "silver":
+                selectUserCommRate = "select commissionSilver from metadata;"
+                errorMsg = "Could not find users commission rate"
 
-            commRate = db.select(selectUserCommRate, errorMsg)
-            if commRate:
-                context["commrate"] = commRate[0][0]
+                commRate = db.select(selectUserCommRate, errorMsg)
+                if commRate:
+                    context["commrate"] = commRate[0][0]
 
-        elif context["commtype"] == "gold":
-            selectUserCommRate = "select commissionGold from metadata;"
-            errorMsg = "Could not find users commission rate"
+            elif context["commtype"] == "gold":
+                selectUserCommRate = "select commissionGold from metadata;"
+                errorMsg = "Could not find users commission rate"
 
-            commRate = db.select(selectUserCommRate, errorMsg)
-            if commRate:
-                context["commrate"] = commRate[0][0]
+                commRate = db.select(selectUserCommRate, errorMsg)
+                if commRate:
+                    context["commrate"] = commRate[0][0]
 
-        commrate = float(context["commrate"])
-        btcrate = currentBtcRate
-        finalbitcoins = 0.0
+            commrate = float(context["commrate"])
+            btcrate = currentBtcRate
+            finalbitcoins = 0.0
 
-        if verifyUsername(newusername, userId):
-            context["nameverified"] = True
-            if verifyBalance(enteredfiat,id):
-                context["balanceverified"] = True
+            if verifyUsername(newusername, userId):
+                context["nameverified"] = True
+                if verifyBalance(enteredfiat,id):
+                    context["balanceverified"] = True
 
-                if commtype == "fiat":
-                    finalbitcoins = (enteredfiat*(1-(commrate)/100))/btcrate
-                elif commtype == "bitcoin":
-                    finalbitcoins = (enteredfiat*(1-(commrate)/100))/btcrate
+                    if commtype == "fiat":
+                        finalbitcoins = (enteredfiat*(1-(commrate)/100))/btcrate
+                    elif commtype == "bitcoin":
+                        finalbitcoins = (enteredfiat*(1-(commrate)/100))/btcrate
 
-                commamount = (enteredfiat*commrate)/100
-                userId = updatewallet(finalbitcoins,enteredfiat,newusername, id)
-                if userId:
-                    context["updatedwallet"] = True
-                    selectAccountBalance = "select accountBalance from wallet where id=(%s)"
-                    errorMsg = "Could not find accountBalance"
-                    params = (id,)
-                    accountBlance = db.selectPrepared(selectAccountBalance,params,errorMsg)
+                    commamount = (enteredfiat*commrate)/100
+                    userId = updatewallet(finalbitcoins,enteredfiat,newusername, id)
+                    if userId:
+                        context["updatedwallet"] = True
+                        selectAccountBalance = "select accountBalance from wallet where id=(%s)"
+                        errorMsg = "Could not find accountBalance"
+                        params = (id,)
+                        accountBlance = db.selectPrepared(selectAccountBalance,params,errorMsg)
 
-                    if accountBlance:
-                        context["accountbalance"] = accountBlance[0][0]
-                    if addtransaction(context,id,commtype,enteredfiat,commamount,buttontype,finalbitcoins,btcrate, userId):
-                        context["transactionadded"] = True
+                        if accountBlance:
+                            context["accountbalance"] = accountBlance[0][0]
+                        if addtransaction(context,id,commtype,enteredfiat,commamount,buttontype,finalbitcoins,btcrate, userId):
+                            context["transactionadded"] = True
 
-                        updateQuery = "update metadata set totalBtc=totalBtc-(%s), totalCurrency=totalCurrency+(%s)"
-                        errorMsg = "could not update metadata"
-                        db = DB()
-                        params = (finalbitcoins,enteredfiat,)
-                        db.insertPrepared(updateQuery,params, errorMsg)
+                            updateQuery = "update metadata set totalBtc=totalBtc-(%s), totalCurrency=totalCurrency+(%s)"
+                            errorMsg = "could not update metadata"
+                            db = DB()
+                            params = (finalbitcoins,enteredfiat,)
+                            db.insertPrepared(updateQuery,params, errorMsg)
+        else:
+            return render(request, 'buy.html', context)
                            
     return render(request, 'buy.html', context)
 

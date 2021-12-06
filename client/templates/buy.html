@@ -240,6 +240,10 @@
           <div style="width: fit-content; color: red;" role="alert">
               Enter correct username
           </div>
+          {% elif click == True and commissionverified == False%}
+          <div style="width: fit-content; color: red;" role="alert">
+              User is not a client
+          </div>
       {% elif click == True and balanceverified == False%}
           <div style="width: fit-content; color: red;" role="alert">
               Not sufficient balance
