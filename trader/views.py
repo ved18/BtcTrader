@@ -17,7 +17,6 @@ def transactionHistoryView(request):
         "st": '',
         "tid": ""
     }
-    print(request.POST.get("remarks"))
     if(request.POST.get("remarks")):
         id = int(request.POST.get("tid"))
         remarks = request.POST.get("remarks")
@@ -28,8 +27,6 @@ def transactionHistoryView(request):
         context["tid"]=int(request.POST.get('tid'))
         context["st"]=transaction.objects.filter(traderid=request.session.get("userId"),tid=context["tid"])
         return render(request,"singleTransaction.html",context)
-    else:
-        print("nthing")
     st=transaction.objects.filter(traderid=request.session.get("userId"))
     return render(request,'traderTransactionHistory.html',{"st":st})
 
@@ -78,7 +75,6 @@ def cancel(id, remarks):
 
                 if row:
                     now = datetime.now()
-                    print(tid, remarks,now)
                     updateQuery = "insert into cancelLogs values ((%s),(%s),(%s))"
                     errorMsg = "could not insert into logs"
                     param=(tid,now,remarks)
