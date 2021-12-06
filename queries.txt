@@ -1,32 +1,13 @@
 create database BtcTraderDB;
 use BtcTraderDB;
-create table users(id int AUTO_INCREMENT NOT NULL, username varchar(255) NOT NULL, PRIMARY KEY(id));
-create table client(id int NOT NULL, firstName varchar(255) NOT NULL, lastName varchar(255) NOT NULL, state varchar(255) NOT NULL, city varchar(255) NOT NULL, street varchar(255), zip int NOT NULL, phoneNumber int NOT NULL, cellNumber int, type varchar(255) NOT NULL DEFAULT 'Silver', PRIMARY KEY(id), FOREIGN KEY(id) references users(id));
-create table trader(id int NOT NULL, firstName varchar(255) NOT NULL, lastName varchar(255) NOT NULL, state varchar(255) NOT NULL, city varchar(255) NOT NULL, street varchar(255), zip int NOT NULL, phoneNumber int NOT NULL, cellNumber int, PRIMARY KEY(id), FOREIGN KEY(id) references users(id));
+create table users(id int NOT NULL AUTO_INCREMENT, username varchar(255) NOT NULL UNIQUE, PRIMARY KEY(id));
+create table client(id int NOT NULL, firstName varchar(255) NOT NULL, lastName varchar(255) NOT NULL, state varchar(255) NOT NULL, city varchar(255) NOT NULL, street varchar(255) NOT NULL, zip int NOT NULL, phoneNumber varchar(255) NOT NULL, cellNumber varchar(255), type varchar(255) NOT NULL DEFAULT 'Silver', PRIMARY KEY(id), FOREIGN KEY(id) references users(id));
+create table trader(id int NOT NULL, firstName varchar(255) NOT NULL, lastName varchar(255) NOT NULL, state varchar(255) NOT NULL, city varchar(255) NOT NULL, street varchar(255) NOT NULL, zip int NOT NULL, phoneNumber varchar(255) NOT NULL, cellNumber varchar(255), PRIMARY KEY(id), FOREIGN KEY(id) references users(id));
 create table login(id int NOT NULL, password varchar(255) NOT NULL, type varchar(255) NOT NULL, PRIMARY KEY(id), FOREIGN KEY(id) references users(id));
-create table wallet(id int NOT NULL, userId int NOT NULL, btcAmount float NOT NULL DEFAULT 0, accountBalance float NOT NULL DEFAULT 0, PRIMARY KEY(id), FOREIGN KEY(userId) references users(id));
-create table transaction(tid int NOT NULL, clientId int NOT NULL, traderId int NOT NULL, commissionType varchar(255) NOT NULL, totalAmount float NOT NULL, commissionAmount float NOT NULL, orderType varchar(255) NOT NULL, status varchar(255) NOT NULL, date int NOT NULL, btcAmount float NOT NULL, btcRate float NOT NULL, walletId int NOT NULL, PRIMARY KEY(tid), FOREIGN KEY(clientId) references users(id), FOREIGN KEY(traderId) references users(id), FOREIGN KEY(walletId) references wallet(id));
+create table wallet(id int AUTO_INCREMENT Not Null, btcAmount float NOT NULL DEFAULT 0, accountBalance float NOT NULL DEFAULT 0, PRIMARY KEY(id), FOREIGN KEY(id) references users(id));
+create table transaction(tid int AUTO_INCREMENT Not Null, clientId int NOT NULL, traderId int, commissionType varchar(255) NOT NULL, totalAmount float NOT NULL, commissionAmount float NOT NULL, orderType varchar(255) NOT NULL, status varchar(255) NOT NULL, date timestamp NOT NULL, btcAmount float NOT NULL, btcRate float NOT NULL, walletId int NOT NULL, PRIMARY KEY(tid), FOREIGN KEY(clientId) references users(id), FOREIGN KEY(traderId) references users(id), FOREIGN KEY(walletId) references wallet(id));
 create table portfolio(id int NOT NULL, investmentAmount float NOT NULL, totalBtc float NOT NULL, PRIMARY KEY(id), FOREIGN KEY(id) references users(id));
 create table metaData(totalBtc float NOT NULL, totalCurrency float NOT NULL, commissionGold float NOT NULL DEFAULT(2.5), commissionSilver float NOT NULL DEFAULT(5));
 create table manager(username varchar(255) NOT NULL, password varchar(255) NOT NULL, PRIMARY KEY(username));
 create table walletTransactions(id int NOT NULL AUTO_INCREMENT, walletId int NOT NULL, amount int NOT NULL, date timestamp, PRIMARY KEY(id), FOREIGN KEY(walletId) references wallet(id));
-Alter table users ADD UNIQUE(username);
-
-alter table transaction modify column tid int AUTO_INCREMENT Not Null;
-SET FOREIGN_KEY_CHECKS=0;
-
-alter table wallet modify column id int AUTO_INCREMENT Not Null;
-SET FOREIGN_KEY_CHECKS=1;
-
-alter table transaction modify traderId int;
-alter table transaction modify column date timestamp;
-create table cancelLogs(id int NOT NULL, date timestamp, remarks varchar(255) NOT NULL, PRIMARY KEY(id), foreign key(id) references transaction(tid));
-
-alter table wallet drop constraint wallet_ibfk_1;
-alter table wallet drop column userId
-
-Correct Queries:
-
-create table users(id int AUTO_INCREMENT NOT NULL, unique(username) varchar(255) NOT NULL, PRIMARY KEY(id));
-create table transaction(tid int AUTO_INCREMENT Not Null, clientId int NOT NULL, traderId int, commissionType varchar(255) NOT NULL, totalAmount float NOT NULL, commissionAmount float NOT NULL, orderType varchar(255) NOT NULL, status varchar(255) NOT NULL, date timestamp NOT NULL, btcAmount float NOT NULL, btcRate float NOT NULL, walletId int NOT NULL, PRIMARY KEY(tid), FOREIGN KEY(clientId) references users(id), FOREIGN KEY(traderId) references users(id), FOREIGN KEY(walletId) references wallet(id));
-create table wallet(id int AUTO_INCREMENT Not Null, btcAmount float NOT NULL DEFAULT 0, accountBalance float NOT NULL DEFAULT 0, PRIMARY KEY(id), FOREIGN KEY(userId) references users(id));
+create table cancelLogs(id int NOT NULL, date timestamp NOT NULL, remarks varchar(255) NOT NULL, PRIMARY KEY(id), FOREIGN KEY(id) references transaction(tid))
