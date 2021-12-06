@@ -1,6 +1,6 @@
-Database project.
+pip3 install pipenv
+pipenv install
+brew install memcached - for macOS
+brew install mysql
 
-pipenv install requests.
-pipenv install PyMySQL
-pipenv install django
-brew install memcached
+#Change mysql settings in settings.py for username and password

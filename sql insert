@@ -1,4 +1,0 @@
-insert into users values(2,'y');
-insert into client values (2,'y','y','asd','asd','asfd',1,1,1,'sdf');
-insert into wallet values(2,2,1000,1000);
-insert into transaction values(2,2,2,'SILVER',100,1000,'buy','cancelled',2020/10/11,1000,2,2);
