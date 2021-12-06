@@ -20,7 +20,6 @@ def loginView(request):
         username = str(request.POST.get('username'))
         password = str(request.POST.get('password'))
 
-        print(username, password)
 
         #find id first
 
