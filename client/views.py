@@ -176,7 +176,11 @@ def addtransaction(context,id,commtype,enteredfiat,commamount,buttontype,finalbi
     walletId = row[0][0]
     status="Success"
     now = datetime.now()
-
+    temp = int(id)
+    insertQuery = "update portfolio set investmentAmount = investmentAmount+(%s), totalBtc = totalBtc+(%s) where id=(%s)"
+    tuple = (enteredfiat, finalbitcoins,temp)
+    errorMsg = "not working"
+    row = db.insertPrepared(insertQuery, tuple, errorMsg)
     if context["userType"]== "client":
 
         insertQuery = "Insert into transaction(clientId, traderId,  commissionType, totalAmount, commissionAmount, orderType, status, date, btcAmount, btcRate, walletId) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"

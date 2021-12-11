@@ -7,7 +7,7 @@ create table login(id int NOT NULL, password varchar(255) NOT NULL, type varchar
 create table wallet(id int AUTO_INCREMENT Not Null, btcAmount float NOT NULL DEFAULT 0, accountBalance float NOT NULL DEFAULT 0, PRIMARY KEY(id), FOREIGN KEY(id) references users(id));
 create table transaction(tid int AUTO_INCREMENT Not Null, clientId int NOT NULL, traderId int, commissionType varchar(255) NOT NULL, totalAmount float NOT NULL, commissionAmount float NOT NULL, orderType varchar(255) NOT NULL, status varchar(255) NOT NULL, date timestamp NOT NULL, btcAmount float NOT NULL, btcRate float NOT NULL, walletId int NOT NULL, PRIMARY KEY(tid), FOREIGN KEY(clientId) references users(id), FOREIGN KEY(traderId) references users(id), FOREIGN KEY(walletId) references wallet(id));
 create table portfolio(id int NOT NULL, investmentAmount float NOT NULL, totalBtc float NOT NULL, PRIMARY KEY(id), FOREIGN KEY(id) references users(id));
-create table metaData(totalBtc float NOT NULL, totalCurrency float NOT NULL, commissionGold float NOT NULL DEFAULT(2.5), commissionSilver float NOT NULL DEFAULT(5));
+create table metadata(totalBtc float NOT NULL, totalCurrency float NOT NULL, commissionGold float NOT NULL DEFAULT(2.5), commissionSilver float NOT NULL DEFAULT(5));
 create table manager(username varchar(255) NOT NULL, password varchar(255) NOT NULL, PRIMARY KEY(username));
 create table walletTransactions(id int NOT NULL AUTO_INCREMENT, walletId int NOT NULL, amount int NOT NULL, date timestamp, PRIMARY KEY(id), FOREIGN KEY(walletId) references wallet(id));
 create table cancelLogs(id int NOT NULL, date timestamp NOT NULL, remarks varchar(255) NOT NULL, PRIMARY KEY(id), FOREIGN KEY(id) references transaction(tid));
@@ -33,22 +33,22 @@ insert into client(id, firstName, lastName, state, city, street, zip, phoneNumbe
 insert into wallet(id, btcAmount, accountBalance) values(1, 10, 100000);
 
 insert into users(username) values("alekya@gmail.com");
-insert into login(id, password, type) values(1, "alekya", "client");
+insert into login(id, password, type) values(2, "alekya", "client");
 insert into client(id, firstName, lastName, state, city, street, zip, phoneNumber, cellNumber, type) values(2, "alekya", "kondepudi", "TX", "Richardson", "Renner", "75080", "9130288307", "", "silver");
 insert into wallet(id, btcAmount, accountBalance) values(2, 10, 100000);
 
 insert into users(username) values("vedang@gmail.com");
-insert into login(id, password, type) values(1, "vedang", "trader");
+insert into login(id, password, type) values(3, "vedang", "trader");
 insert into trader(id, firstName, lastName, state, city, street, zip, phoneNumber, cellNumber) values(3, "vedang", "kapse", "TX", "Richardson", "Renner", "75080", "9130288307", "");
 insert into wallet(id, btcAmount, accountBalance) values(3, 0, 100000);
 
 insert into users(username) values("anurag@gmail.com");
-insert into login(id, password, type) values(1, "anurag", "client");
+insert into login(id, password, type) values(4, "anurag", "client");
 insert into client(id, firstName, lastName, state, city, street, zip, phoneNumber, cellNumber, type) values(4, "anurag", "wasankar", "TX", "Richardson", "Renner", "75080", "9130288307", "", "gold");
 insert into wallet(id, btcAmount, accountBalance) values(4, 10, 100000);
 
 insert into users(username) values("ruchitha@gmail.com");
-insert into login(id, password, type) values(1, "ruchitha", "trader");
+insert into login(id, password, type) values(5, "ruchitha", "trader");
 insert into trader(id, firstName, lastName, state, city, street, zip, phoneNumber, cellNumber) values(5, "ruchitha", "pannala", "TX", "Richardson", "Renner", "75080", "9130288307", "");
 insert into wallet(id, btcAmount, accountBalance) values(5, 0, 100000);
 

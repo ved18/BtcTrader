@@ -49,10 +49,21 @@ def signupView(request):
         if usertype == "client":
             param = (id, firstName, lastName, state, city, street, zip, phoneNumber, cellNumber, userType)
             insertClient = db.insertPrepared(insertClientQuery, param, errorMsg)
+            insertQuery = "Insert into portfolio values((%s),(%s), (%s))"
+            btcAmount=0
+            totalAmount=0
+            btcBalance=0
+            param = (id, btcAmount, totalAmount)
+            errorMsg = "could not add portfolio"
+            insertPortfolio = db.insertPrepared(insertQuery, param, errorMsg)
         elif usertype == "trader":
             param = param = (id, firstName, lastName, state, city, street, zip, phoneNumber, cellNumber)
             insertTrader = db.insertPrepared(insertTraderQuery, param, errorMsg)
+        
+        
 
+        
+        
         insertWalletQuery = "Insert into wallet values((%s),(%s), (%s))"
         btcAmount=0
         btcBalance=0
