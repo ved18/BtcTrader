@@ -61,8 +61,11 @@ def homeView(request):
         clientRow2 = db.selectPrepared(selectInvestment, param, errorMsg)
         if clientRow2:
             context["t2"] = clientRow2[0][0]
-    
-        currentRate=10
+        response = requests.get('https://api.coindesk.com/v1/bpi/currentprice.json')
+        btcRateJson = response.json()
+        currentBtcRate = btcRateJson['bpi']['USD']['rate_float']
+
+        currentRate=currentBtcRate
         #assuming the currentRate value for the bitcoin as 10.
         ans=currentRate*(context["t1"])-(context["t2"])
         if(ans>0):
